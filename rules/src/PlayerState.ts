@@ -1,5 +1,9 @@
-import PlayerColor from './PlayerColor'
+import Wildlife from './Wildlife';
 
 export default interface PlayerState {
-  color: PlayerColor
+  trees: number[][]
+  plants: number[]
+  weather: number[]
+  threats: number[]
+  wildlife: Wildlife[]
 }

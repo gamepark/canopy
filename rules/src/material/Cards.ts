@@ -1,91 +1,125 @@
 import Card from './Card'
+import DeckType from './DeckType'
 import CardType from './CardType'
-import CardSubType from './CardSubType'
-import PlantsCard from './PlantsCard'
-import WeatherCard from './WeatherCard'
-import ThreatsCard from './ThreatsCard'
+import Plant from './Plant'
+import Weather from './Weather'
+import Threat from './Threat'
 
-const {SeedsCard, RainforestCard} = CardType
-const {RootTrunk, Canopy, Plants, Weather, Threats, Wildlife} = CardSubType
-const {Philodendron, Bromelia, Ferns, Seeds} = PlantsCard
-const {Rain, Sun} = WeatherCard
-const {Fire, Drought, Disease} = ThreatsCard
+const {SeedsDeck, RainforestDeck} = DeckType
+const {RootTrunks, Canopies, Plants, Weathers, Threats, Wildlifes} = CardType
+const {Philodendron, Bromelia, Ferns, Seeds} = Plant
+const {Rain, Sun} = Weather
+const {Fire, Drought, Disease} = Threat
 
 export const RootTrunk0: Card = {
-    type: RainforestCard,
-    subType: RootTrunk,
+    deckType: RainforestDeck,
+    cardType: RootTrunks,
     numberOfCopies: 6
 }
 
 export const RootTrunk1: Card = {
-    type: RainforestCard,
-    subType: RootTrunk,
+    deckType: RainforestDeck,
+    cardType: RootTrunks,
     victoryPoints: 1,
     numberOfCopies: 6
 }
 
 export const RootTrunk2: Card = {
-    type: RainforestCard,
-    subType: RootTrunk,
+    deckType: RainforestDeck,
+    cardType: RootTrunks,
     victoryPoints: 2,
     numberOfCopies: 6
 }
 
 export const Canopy0: Card = {
-    type: RainforestCard,
-    subType: Canopy,
+    deckType: RainforestDeck,
+    cardType: Canopies,
     numberOfCopies: 2
 }
 
 export const Canopy1: Card = {
-    type: RainforestCard,
-    subType: Canopy,
-    victoryPoints: {[RootTrunk]: 1},
+    deckType: RainforestDeck,
+    cardType: Canopies,
+    victoryPoints: {[RootTrunks]: 1},
     numberOfCopies: 5
 }
 
 export const Canopy2: Card = {
-    type: RainforestCard,
-    subType: Canopy,
-    victoryPoints: {[RootTrunk]: 2},
+    deckType: RainforestDeck,
+    cardType: Canopies,
+    victoryPoints: {[RootTrunks]: 2},
     numberOfCopies: 3
 }
 
 export const PhilodendronCard: Card = {
-    type: RainforestCard,
-    subType: Plants,
-    plantsName: Philodendron,
-    victoryPoints: {Int([Philodendron]/3): 8}
+    deckType: RainforestDeck,
+    cardType: Plants,
+    plantName: Philodendron,
+    //victoryPoints: {Int([Philodendron]/3): 8}
     numberOfCopies: 12
 }
 
 export const BromeliaCard: Card = {
-    type: RainforestCard,
-    subType: Plants,
-    plantsName: Bromelia,
-    victoryPoints: {[Bromelia] = 1: 2, [Bromelia] = 2: 7, [Bromelia] > 2: -3}
+    deckType: RainforestDeck,
+    cardType: Plants,
+    plantName: Bromelia,
+    //victoryPoints: {[Bromelia] = 1: 2, [Bromelia] = 2: 7, [Bromelia] > 2: -3}
     numberOfCopies: 11
 }
 
 export const FernsCard: Card = {
-    type: RainforestCard,
-    subType: Plants,
-    plantsName: Ferns,
-    victoryPoints: {isOdd([Ferns]), [Ferns]: 2}
+    deckType: RainforestDeck,
+    cardType: Plants,
+    plantName: Ferns,
+    //victoryPoints: {isOdd([Ferns]), [Ferns]: 2}
     numberOfCopies: 13
 }
 
+export const SeedsCard: Card = {
+    deckType: RainforestDeck,
+    cardType: Plants,
+    plantName: Seeds,
+    numberOfCopies: 5
+}
+
 export const RainCard: Card = {
-    type: RainforestCard,
-    subType: Weather,
+    deckType: RainforestDeck,
+    cardType: Weathers,
     weatherName: Rain,
-    victoryPoints: {Min([Rain],[Sun]): 5}
+    //victoryPoints: {Min([Rain],[Sun]): 5}
     numberOfCopies: 8
 }
 
 export const SunCard: Card = {
-    type: RainforestCard,
-    subType: Weather,
+    deckType: RainforestDeck,
+    cardType: Weathers,
     weatherName: Sun,
     numberOfCopies: 8
 }
+
+export const FireCard: Card = {
+    deckType: RainforestDeck,
+    cardType: Threats,
+    threatName: Fire,
+    numberOfCopies: 3
+}
+
+export const DroughtCard: Card = {
+    deckType: RainforestDeck,
+    cardType: Threats,
+    threatName: Drought,
+    numberOfCopies: 3
+}
+
+export const DiseaseCard: Card = {
+    deckType: RainforestDeck,
+    cardType: Threats,
+    threatName: Disease,
+    numberOfCopies: 8
+}
+
+const cardDescriptions = [RootTrunk0, RootTrunk1, RootTrunk2, Canopy0, Canopy1, Canopy2, PhilodendronCard, BromeliaCard, FernsCard, SeedsCard, RainCard, SunCard, FireCard, DroughtCard, DiseaseCard]
+const cards = cardDescriptions.flatMap(card => Array(card.numberOfCopies).fill(card))
+
+export default cards
+
