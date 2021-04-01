@@ -37,9 +37,9 @@ export default class Canopy extends SequentialGame<GameState, Move>
       super(arg)
     } else {
       super({
-        players: [PlayerState, PlayerState],
+        players: ,
         activePlayer: 0, season: 1, seedsDeck: [],
-        rainforestDecks: [[34],[34],[34]],
+        rainforestDecks: [[28],[34],[34]],
         newGrowthDecks: [[1],[2],[3]]})
     }
   }
