@@ -1,6 +1,8 @@
 import {SecretInformation, SequentialGame} from '@gamepark/rules-api'
+import shuffle from 'lodash.shuffle'
 import GameState from './GameState'
 import GameView from './GameView'
+import cardDescriptions, { rainforestCards, seedsCards } from './material/Cards'
 import {drawCard} from './moves/DrawCard'
 import Move from './moves/Move'
 import MoveType from './moves/MoveType'
@@ -38,7 +40,9 @@ export default class Canopy extends SequentialGame<GameState, Move>
     } else {
       super({
         players: ,
-        activePlayer: 0, season: 1, seedsDeck: [],
+        activePlayer: 0,
+        season: 1,
+        seedsDeck: shuffle(Array.from(seedsCards.keys())),
         rainforestDecks: [[28],[34],[34]],
         newGrowthDecks: [[1],[2],[3]]})
     }

@@ -243,5 +243,13 @@ const cardDescriptions = [
 ]
 const cards = cardDescriptions.flatMap(card => Array(card.numberOfCopies).fill(card))
 
+export const seedsCards = cards.filter(function(card) {
+    return card.deckType === SeedsDeck
+})
+
+export const rainforestCards = cards.filter(function(card) {
+    return card.deckType === RainforestDeck
+})
+
 export default cards
 
