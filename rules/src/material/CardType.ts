@@ -1,5 +1,5 @@
 enum CardType {
-    RootTrunks = 1, Canopies, Plants, Weathers, Threats, Wildlifes
+    Trunk = 1, Canopy, Plants, Seeds, Weather, Threats, Wildlife, ShiftingSeason
   }
 
   export default CardType

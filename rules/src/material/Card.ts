@@ -9,13 +9,16 @@ import WildlifeType from './WildlifeType'
 type Card = {
   deckType: DeckType
   cardType: CardType
+  advancedCard: boolean
+  //shiftingSeasonEffect?:
   //plantName?: Plant
   //weatherName?: Weather
   //threatName?: Threat
   wildlifeType?: WildlifeType
   //wildlifeName?: WildlifeName
   //wildlifeEffect?: 
-  victoryPoints?: number | { [key in CardType]?: number | CardType }
+  endOfSeasonVictoryPoints?: number | { [key in CardType]?: number | CardType }
+  endOfGameVictoryPoints?: number | { [key in CardType]?: number | CardType }
   numberOfCopies: number
 }
 
