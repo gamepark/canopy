@@ -1,29 +1,30 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
-import Development from '@gamepark/its-a-wonderful-world/material/Development'
+import Card from '@gamepark/canopy/material/Card'
 import {
-  AirborneLaboratory, AircraftCarrier, AlexandersTomb, AncientAstronauts, Aquaculture, ArkOfTheCovenant, Atlantis, BermudaTriangle, BionicCrafts,
-  BlackBeardsTreasure, CasinoCity, CenterOfTheEarth, CitiesOfGold, CityOfAgartha, ClimateControl, Cryopreservation, EspionageAgency, FinancialCenter,
-  FountainOfYouth, GardensOfTheHesperides, GeneticUpgrades, GiantDam, GiantTower, GravityInverter, HarborZone, HumanCloning, Icebreaker, IndustrialComplex,
-  IslandOfAvalon, Juggernaut, KingSolomonsMines, LostContinentOfMu, LunarBase, MagneticTrain, MegaBomb, MegaDrill, MilitaryBase, Museum, NationalMonument,
-  Neuroscience, NuclearPlant, OffshoreOilRig, ParallelDimension, PolarBase, PropagandaCenter, QuantumGenerator, RecyclingPlant, ResearchCenter, RobotAssistants,
-  RoboticAnimals, Roswell, Satellites, SaucerSquadron, SecretLaboratory, SecretSociety, SecurityAutomatons, SolarCannon, SpaceElevator, Submarine,
-  Supercomputer, SuperSoldiers, SuperSonar, TankDivision, Teleportation, TimeTravel, Transmutation, TransportationNetwork, TreasureOfTheTemplars,
-  UndergroundCity, UnderwaterCity, UniversalExposition, UniversalVaccine, University, UnknownTechnology, VirtualReality, WindTurbines, WorldCongress, Zeppelin
-} from '@gamepark/its-a-wonderful-world/material/Developments'
+  SeasonOfCleansing, SeasonOfDanger, SeasonOfDiversity, SeasonOfFecundity, SeasonOfHunting, SeasonOfLeaves, SeasonOfMating, SeasonOfRot, SeasonOfSky, SeasonOfStature, SeasonOfSymbiotes,
+  StartTrunk,
+  sTrunk0, sTrunk1, sTrunk2,sCanopy0, sCanopy1, sCanopy2, sFern, sBromelia, sMonstera, sRain, sSun,
+  rTrunk0, rTrunk1, rTrunk2, rCanopy0, rCanopy1, rCanopy2, rFern, rBromelia, rMonstera, Seed, rRain, rSun, Drought, Disease, Fire,
+  ActiveWildlife_EmeraldBoa, ActiveWildlife_Kinkajou, ActiveWildlife_LeafcutterAnts, ActiveWildlife_PoisonDartFrog, ActiveWildlife_Sloth, ActiveWildlife_Toucan,
+  MatingPair_EmeraldBoa, MatingPair_Kinkajou, MatingPair_LeafcutterAnts, MatingPair_PoisonDartFrog, MatingPair_Sloth, MatingPair_Toucan,
+  CoincapFungi, Lianas, Orchid, PitcherPlant, Lightning, Blight,
+  ActiveWildlife_GoldenLionTamarin, ActiveWildlife_GoliathBirdEater, ActiveWildlife_HarmoniaMantle, ActiveWildlife_Hoatzin, ActiveWildlife_HowlerMonkey, ActiveWildlife_Jaguar, ActiveWildlife_PygmyMarmoset,
+  MatingPair_GoldenLionTamarin, MatingPair_GoliathBirdEater, MatingPair_Hoatzin, MatingPair_HowlerMonkey, MatingPair_Jaguar
+} from '@gamepark/canopy/material/Cards'
 import {forwardRef} from 'react'
 import {useTranslation} from 'react-i18next'
 import Images from '../Images'
-import DevelopmentCardsTitles from './DevelopmentCardsTitles'
+import CardsTitles from './CardsTitles'
 
-type Props = { development?: Development } & React.HTMLAttributes<HTMLDivElement>
+type Props = { card?: Card } & React.HTMLAttributes<HTMLDivElement>
 
-const DevelopmentCard = forwardRef<HTMLDivElement, Props>(({development, ...props}, ref) => {
+const Card = forwardRef<HTMLDivElement, Props>(({card, ...props}, ref) => {
   const {t} = useTranslation()
   return (
-    <div ref={ref} {...props} css={[style, !development && hidden]}>
-      <div css={[frontFace, getBackgroundImage(development)]}>
-        {development && <h3 css={cardTitle}>{DevelopmentCardsTitles.get(development)!(t)}</h3>}
+    <div ref={ref} {...props} css={[style, !card && hidden]}>
+      <div css={[frontFace, getBackgroundImage(card)]}>
+        {card && <h3 css={cardTitle}>{CardsTitles.get(card)!(t)}</h3>}
       </div>
     </div>
   )
@@ -63,9 +64,9 @@ const frontFace = css`
   border-radius: 6% / ${65 / 100 * 6}%;
 `
 
-const getBackgroundImage = (development?: Development) => css`
+const getBackgroundImage = (card?: Card) => css`
   image-rendering: -webkit-optimize-contrast;
-  background-image: url(${development ? images.get(development) : Images.developmentBack});
+  background-image: url(${card ? images.get(card) : Images.developmentBack});
 `
 
 export const cardTitleFontSize = 0.9
@@ -82,85 +83,75 @@ const cardTitle = css`
   text-shadow: 0 0 0.3em #000, 0 0 0.3em #000;
   text-transform: uppercase;
 `
-const images = new Map<Development, any>()
+const images = new Map<Card, any>()
 
-images.set(FinancialCenter, Images.financialCenter)
-images.set(IndustrialComplex, Images.industrialComplex)
-images.set(MilitaryBase, Images.militaryBase)
-images.set(NuclearPlant, Images.nuclearPlant)
-images.set(OffshoreOilRig, Images.offshoreOilRig)
-images.set(RecyclingPlant, Images.recyclingPlant)
-images.set(ResearchCenter, Images.researchCenter)
-images.set(TransportationNetwork, Images.transportationNetwork)
-images.set(WindTurbines, Images.windTurbines)
-images.set(AirborneLaboratory, Images.airborneLaboratory)
-images.set(AircraftCarrier, Images.aircraftCarrier)
-images.set(Icebreaker, Images.icebreaker)
-images.set(Juggernaut, Images.juggernaut)
-images.set(MegaDrill, Images.megaDrill)
-images.set(SaucerSquadron, Images.saucerSquadron)
-images.set(Submarine, Images.submarine)
-images.set(TankDivision, Images.tankDivision)
-images.set(Zeppelin, Images.zeppelin)
-images.set(Aquaculture, Images.aquaculture)
-images.set(BionicCrafts, Images.bionicCrafts)
-images.set(ClimateControl, Images.climateControl)
-images.set(Cryopreservation, Images.cryopreservation)
-images.set(GeneticUpgrades, Images.geneticUpgrades)
-images.set(GravityInverter, Images.gravityInverter)
-images.set(HumanCloning, Images.humanCloning)
-images.set(MegaBomb, Images.megaBomb)
-images.set(Neuroscience, Images.neuroscience)
-images.set(QuantumGenerator, Images.quantumGenerator)
-images.set(RobotAssistants, Images.robotAssistants)
-images.set(RoboticAnimals, Images.roboticAnimals)
-images.set(Satellites, Images.satellites)
-images.set(SecurityAutomatons, Images.securityAutomatons)
-images.set(SuperSoldiers, Images.superSoldiers)
-images.set(SuperSonar, Images.superSonar)
-images.set(Supercomputer, Images.supercomputer)
-images.set(Teleportation, Images.teleportation)
-images.set(TimeTravel, Images.timeTravel)
-images.set(Transmutation, Images.transmutation)
-images.set(UniversalVaccine, Images.universalVaccine)
-images.set(UnknownTechnology, Images.unknownTechnology)
-images.set(VirtualReality, Images.virtualReality)
-images.set(CasinoCity, Images.casinoCity)
-images.set(EspionageAgency, Images.espionageAgency)
-images.set(GiantDam, Images.giantDam)
-images.set(GiantTower, Images.giantTower)
-images.set(HarborZone, Images.harborZone)
-images.set(LunarBase, Images.lunarBase)
-images.set(MagneticTrain, Images.magneticTrain)
-images.set(Museum, Images.museum)
-images.set(NationalMonument, Images.nationalMonument)
-images.set(PolarBase, Images.polarBase)
-images.set(PropagandaCenter, Images.propagandaCenter)
-images.set(SecretLaboratory, Images.secretLaboratory)
-images.set(SecretSociety, Images.secretSociety)
-images.set(SolarCannon, Images.solarCannon)
-images.set(SpaceElevator, Images.spaceElevator)
-images.set(UndergroundCity, Images.undergroundCity)
-images.set(UnderwaterCity, Images.underwaterCity)
-images.set(UniversalExposition, Images.universalExposition)
-images.set(University, Images.university)
-images.set(WorldCongress, Images.worldCongress)
-images.set(AlexandersTomb, Images.alexandersTomb)
-images.set(AncientAstronauts, Images.ancientAstronauts)
-images.set(ArkOfTheCovenant, Images.arkOfTheCovenant)
-images.set(Atlantis, Images.atlantis)
-images.set(BermudaTriangle, Images.bermudaTriangle)
-images.set(BlackBeardsTreasure, Images.blackBeardsTreasure)
-images.set(CenterOfTheEarth, Images.centerOfTheEarth)
-images.set(CitiesOfGold, Images.citiesOfGold)
-images.set(CityOfAgartha, Images.cityOfAgartha)
-images.set(FountainOfYouth, Images.fountainOfYouth)
-images.set(GardensOfTheHesperides, Images.gardensOfTheHesperides)
-images.set(IslandOfAvalon, Images.islandOfAvalon)
-images.set(KingSolomonsMines, Images.kingSolomonsMines)
-images.set(LostContinentOfMu, Images.lostContinentOfMu)
-images.set(ParallelDimension, Images.parallelDimension)
-images.set(Roswell, Images.roswell)
-images.set(TreasureOfTheTemplars, Images.treasureOfTheTemplars)
+images.set(SeasonOfCleansing, Images.seasonOfCleansing)
+images.set(SeasonOfDanger, Images.seasonOfDanger)
+images.set(SeasonOfDiversity, Images.seasonOfDiversity)
+images.set(SeasonOfFecundity, Images.seasonOfFecundity)
+images.set(SeasonOfHunting, Images.seasonOfHunting)
+images.set(SeasonOfLeaves, Images.seasonOfLeaves)
+images.set(SeasonOfMating, Images.seasonOfMating)
+images.set(SeasonOfRot, Images.seasonOfRot)
+images.set(SeasonOfSky, Images.seasonOfSky)
+images.set(SeasonOfStature, Images.seasonOfStature)
+images.set(SeasonOfSymbiotes, Images.seasonOfSymbiotes)
+images.set(StartTrunk, Images.startingTrunk)
+images.set(sBromelia, Images.sBromelia)
+images.set(sCanopy0, Images.sCanopy01)
+images.set(sCanopy1, Images.sCanopy11)
+images.set(sCanopy2, Images.sCanopy21)
+images.set(sFern, Images.sFern)
+images.set(sMonstera, Images.sMonstera)
+images.set(sRain, Images.sRain)
+images.set(sSun, Images.sSun)
+images.set(sTrunk0, Images.sTrunk01)
+images.set(sTrunk1, Images.sTrunk11/Images.sTrunk12)
+images.set(sTrunk2, Images.sTrunk21/Images.sTrunk22)
+images.set(rBromelia, Images.bromelia)
+images.set(rCanopy0, Images.canopy01/Images.canopy02/Images.canopy03)
+images.set(rCanopy1, Images.canopy11/Images.canopy12/Images.canopy13/Images.canopy14/Images.canopy15/Images.canopy16)
+images.set(rCanopy2, Images.canopy21/Images.canopy22)
+images.set(rFern, Images.fern)
+images.set(rMonstera, Images.monstera)
+images.set(rRain, Images.rain)
+images.set(rSun, Images.sun)
+images.set(rTrunk0, Images.trunk01/Images.trunk02/Images.trunk03/Images.trunk04/Images.trunk05)
+images.set(rTrunk1, Images.trunk11/Images.trunk12/Images.trunk13/Images.trunk14/Images.trunk15/Images.trunk16/Images.trunk17/Images.trunk18)
+images.set(rTrunk2, Images.trunk21/Images.trunk22/Images.trunk23/Images.trunk24/Images.trunk25)
+images.set(Seed, Images.seed)
+images.set(Drought, Images.drought)
+images.set(Disease, Images.disease)
+images.set(Fire, Images.fire)
+images.set(ActiveWildlife_EmeraldBoa, Images.emeraldTreeBoaWL)
+images.set(ActiveWildlife_GoldenLionTamarin, Images.goldenLionTamarinWL)
+images.set(ActiveWildlife_GoliathBirdEater, Images.goliathBirdEaterWL)
+images.set(ActiveWildlife_HarmoniaMantle, Images.harmoniaMantleWL1/Images.harmoniaMantleWL2)
+images.set(ActiveWildlife_Hoatzin, Images.hoatzinWL)
+images.set(ActiveWildlife_HowlerMonkey, Images.howlerMonkeyWL)
+images.set(ActiveWildlife_Jaguar, Images.jaguarWL)
+images.set(ActiveWildlife_Kinkajou, Images.kinkajouWL)
+images.set(ActiveWildlife_LeafcutterAnts, Images.leafCutterAntsWL)
+images.set(ActiveWildlife_PoisonDartFrog, Images.poisonDartFrogWL)
+images.set(ActiveWildlife_PygmyMarmoset, Images.pygmyMarmosetWL1/Images.pygmyMarmosetWL2)
+images.set(ActiveWildlife_Sloth, Images.slothWL)
+images.set(ActiveWildlife_Toucan, Images.toucanWL)
+images.set(MatingPair_EmeraldBoa, Images.emeraldTreeBoaMP)
+images.set(MatingPair_GoldenLionTamarin, Images.goldenLionTamarinMP)
+images.set(MatingPair_GoliathBirdEater, Images.goliathBirdEaterMP)
+images.set(MatingPair_Hoatzin, Images.hoatzinMP)
+images.set(MatingPair_HowlerMonkey, Images.howlerMonkeyMP)
+images.set(MatingPair_Jaguar, Images.jaguarMP)
+images.set(MatingPair_Kinkajou, Images.kinkajouMP)
+images.set(MatingPair_LeafcutterAnts, Images.leafCutterAntsMP)
+images.set(MatingPair_PoisonDartFrog, Images.poisonDartFrogMP)
+images.set(MatingPair_Sloth, Images.slothMP)
+images.set(MatingPair_Toucan, Images.toucanMP)
+images.set(CoincapFungi, Images.coincapFungi)
+images.set(Lianas, Images.lianas)
+images.set(Orchid, Images.orchid)
+images.set(PitcherPlant, Images.pitcherPlant)
+images.set(Lightning, Images.lightning)
+images.set(Blight, Images.blight)
 
 export default DevelopmentCard
