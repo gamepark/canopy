@@ -656,16 +656,26 @@ const cardDescriptions = [
 ]
 const cards = cardDescriptions.flatMap(card => Array(card.numberOfCopies).fill(card))
 
-export const startCards = cards.filter(function(card) {
+export const shiftingSeasons = cards.filter(function(card) {
+    return card.deckType === ShiftingSeasonDeck
+})
+
+export const startingTrunks = cards.filter(function(card) {
     return card.deckType === StartingTrunk
 })
 
-export const seedsCards = cards.filter(function(card) {
+export const seedCards = cards.filter(function(card) {
     return card.deckType === SeedsDeck
 })
 
-export const rainforestCards = cards.filter(function(card) {
+export const basicRainforestCards = cards.filter(function(card) {
     return card.deckType === RainforestDeck
+    return card.advancedCard === false
+})
+
+export const advancedRainforestCards = cards.filter(function(card) {
+    return card.deckType === RainforestDeck
+    return card.advancedCard === true
 })
 
 export default cards
