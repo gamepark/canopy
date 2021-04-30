@@ -1,24 +1,26 @@
-import {SecretInformation, SequentialGame} from '@gamepark/rules-api'
+import {SecretInformation, SimultaneousGame} from '@gamepark/rules-api'
 import shuffle from 'lodash.shuffle'
-import GameState from './GameState'
-import GameView from './GameView'
-import cardDescriptions, { rainforestCards, seedsCards } from './material/Cards'
-import {drawCard} from './moves/DrawCard'
+import {CanopyOptions, isGameOptions} from './CanopyOptions'
+import cards, {getCardIds} from './material/cards'
+import CardType from './material/cards/CardType'
+import Deck from './material/cards/Deck'
+import {dealCard, dealCardMove} from './moves/DealCard'
+import {lookAtNewGrowthPile, lookAtNewGrowthPileMove} from './moves/LookAtNewGrowthPile'
 import Move from './moves/Move'
 import MoveType from './moves/MoveType'
 import MoveView from './moves/MoveView'
-import {spendGold} from './moves/SpendGold'
-import {isGameOptions, MyBoardGameOptions} from './MyBoardGameOptions'
-import PlayerColor from './PlayerColor'
+import {passOnPile, passOnPileMove} from './moves/PassOnPile'
+import {playCard, playCardMove} from './moves/PlayCard'
+import {setActivePlayer, setActivePlayerMove} from './moves/SetActivePlayer'
+import GameState from './state/GameState'
+import GameView from './state/GameView'
+import {initPlayerState} from './state/PlayerState'
+import {hidePlayerHand} from './state/PlayerView'
 
 /**
- * Your Board Game rules must extend either "SequentialGame" or "SimultaneousGame".
- * When there is at least on situation during the game where multiple players can act at the same time, it is a "SimultaneousGame"
- * If the game contains information that players does not know (dices, hidden cards...), it must implement "IncompleteInformation".
- * If the game contains information that some players know, but the other players does not, it must implement "SecretInformation" instead.
- * Later on, you can also implement "Competitive", "Undo", "TimeLimit" and "Eliminations" to add further features to the game.
+ * Rules for Canopy
  */
-export default class Canopy extends SequentialGame<GameState, Move>
+export default class Canopy extends SimultaneousGame<GameState, Move>
   implements SecretInformation<GameState, GameView, Move, MoveView> {
   /**
    * This constructor is called when the game "restarts" from a previously saved state.
@@ -29,22 +31,25 @@ export default class Canopy extends SequentialGame<GameState, Move>
    * This constructor is called when a new game is created. If your game has options, or a variable number of players, it will be provided here.
    * @param options The options of the new game
    */
-  constructor()
+  constructor(options: CanopyOptions)
   /**
    * In here you must code the construction of your class. Use a "typeguard" to distinguish a new game from a restored game.
    * @param arg The state of the game, or the options when starting a new game
    */
-  constructor(arg?: GameState) {
-    if (arg) {
-      super(arg)
-    } else {
-      super({
-        players: ,
-        activePlayer: 0,
+  constructor(arg: GameState | CanopyOptions) {
+    if (isGameOptions(arg)) {
+      // For now, exclude advanced card. Options will come later.
+      const rainforestDeck = shuffle(getCardIds(card => card.deck === Deck.Rainforest && !card.advanced))
+      const initialState: GameState = {
+        players: arg.players.map((_, id) => initPlayerState(id)),
         season: 1,
-        seedsDeck: shuffle(Array.from(seedsCards.keys())),
-        rainforestDecks: [[28],[34],[34]],
-        newGrowthDecks: [[1],[2],[3]]})
+        seedsDeck: shuffle(getCardIds(card => card.deck === Deck.Seed)),
+        seasonPiles: [rainforestDeck.splice(rainforestDeck.length * 2 / 3), rainforestDeck.splice(rainforestDeck.length / 2), rainforestDeck],
+        newGrowthPiles: [[], [], []]
+      }
+      super(initialState)
+    } else {
+      super(arg)
     }
   }
 
@@ -52,7 +57,7 @@ export default class Canopy extends SequentialGame<GameState, Move>
    * @return True when game is over
    */
   isOver(): boolean {
-    return false
+    return false // TODO
   }
 
   /**
@@ -60,8 +65,8 @@ export default class Canopy extends SequentialGame<GameState, Move>
    * Only required in a SequentialGame.
    * @return The identifier of the player whose turn it is
    */
-  getActivePlayer(): number | undefined {
-    return this.state.activePlayer // You must return undefined only when game is over, otherwise the game will be blocked.
+  isActive(playerId: number): boolean {
+    return this.state.activePlayer === playerId
   }
 
   /**
@@ -74,11 +79,37 @@ export default class Canopy extends SequentialGame<GameState, Move>
    * - isLegal(move: Move):boolean, for security; and
    * - A class that implements "Dummy" to provide a custom Dummy player.
    */
-  getLegalMoves(): Move[] {
-    return [
-      //{type: MoveType.SpendGold, playerId: this.getActivePlayer()!, quantity: 5},
-      //{type: MoveType.DrawCard, playerId: this.getActivePlayer()!}
-    ]
+  getLegalMoves(playerId: number): Move[] {
+    if (this.state.activePlayer !== playerId) return []
+    const player = this.state.players[this.state.activePlayer]
+    const moves: Move[] = []
+    for (const cardId of player.hand) {
+      const card = cards[cardId]
+      switch (card.type) {
+        case CardType.Trunk:
+          player.trees.forEach((tree, treeId) => {
+            if (tree.canopy === undefined) {
+              moves.push(playCardMove(cardId, treeId)) // add trunk in existing tree without a Canopy
+            }
+          })
+          moves.push(playCardMove(cardId, player.trees.length)) // start new tree
+          break
+        case CardType.Canopy:
+          player.trees.forEach((tree, treeId) => {
+            if (tree.canopy === undefined) {
+              moves.push(playCardMove(cardId, treeId)) // add Canopy in existing tree without a Canopy
+            }
+          })
+          break
+        default:
+          moves.push(playCardMove(cardId)) // add card into forest
+      }
+    }
+    if (this.state.currentPile !== undefined) {
+      // TODO: at the end of a season, "Passing on the final available pile is no longer an option."
+      moves.push(passOnPileMove)
+    }
+    return moves
   }
 
   /**
@@ -88,10 +119,16 @@ export default class Canopy extends SequentialGame<GameState, Move>
    */
   play(move: Move): void {
     switch (move.type) {
-      case MoveType.SpendGold:
-        return spendGold(this.state, move)
-      case MoveType.DrawCard:
-        return drawCard(this.state, move)
+      case MoveType.DealCard:
+        return dealCard(this.state, move.pile)
+      case MoveType.SetActivePlayer:
+        return setActivePlayer(this.state, move)
+      case MoveType.LookAtNewGrowthPile:
+        return lookAtNewGrowthPile(this.state)
+      case MoveType.PlayCard:
+        return playCard(this.state, move)
+      case MoveType.PassOnPile:
+        return passOnPile(this.state)
     }
   }
 
@@ -109,23 +146,70 @@ export default class Canopy extends SequentialGame<GameState, Move>
    * @return The next automatic consequence that should be played in current game state.
    */
   getAutomaticMove(): void | Move {
-    /**
-     * Example:
-     * for (const player of this.state.players) {
-     *   if (player.mustDraw) {
-     *     return {type: MoveType.DrawCard, playerId: player.color}
-     *   }
-     * }
-     */
+    if (this.isSeasonBeginning()) {
+      for (let pile = 1; pile <= this.state.newGrowthPiles.length; pile++) {
+        if (this.state.newGrowthPiles[pile - 1].length < pile) {
+          return dealCardMove(pile)
+        }
+      }
+      return setActivePlayerMove(this.getIdOfPlayerWithLowestScore())
+    } else if (this.state.endOfSeason) {
+      // TODO end of season rules
+    }
+    if (this.state.activePlayer === undefined) {
+      return
+    }
+    if (this.state.addCardToPreviousPile) {
+      return dealCardMove(this.state.currentPile! - 1)
+    }
+    const activePlayer = this.state.players[this.state.activePlayer]
+    if (activePlayer.hand.length === 0) {
+      if (this.state.currentPile !== undefined) {
+        if (this.state.currentPile > 3) {
+          // TODO: draw one card from current season deck
+        } else if (this.state.newGrowthPiles[this.state.currentPile - 1].length > 0) {
+          return lookAtNewGrowthPileMove
+        } else {
+          return passOnPileMove // Pass empty piles at the end of season
+        }
+      } else if (this.state.seasonPiles[this.state.season - 1].length > 0) {
+        for (let pile = 1; pile <= this.state.newGrowthPiles.length; pile++) {
+          if (this.state.newGrowthPiles[pile - 1].length === 0) {
+            return dealCardMove(pile)
+          }
+        }
+      }
+      return setActivePlayerMove((this.state.activePlayer + 1) % this.state.players.length)
+    }
     return
+  }
+
+  isSeasonBeginning(): boolean {
+    return this.state.activePlayer === undefined && this.state.seasonPiles[this.state.season - 1].length > 0
+  }
+
+  getIdOfPlayerWithLowestScore(): number {
+    let id = 0
+    for (let i = 1; i < this.state.players.length; i++) {
+      if (this.state.players[i].score < this.state.players[id].score) {
+        id = i
+      }
+    }
+    return id
   }
 
   /**
    * If you game has incomplete information, you must hide some of the game's state to the players and spectators.
    * @return What a person can see from the game state
    */
-  getView(): GameView {
-    return {...this.state, deck: this.state.deck.length}
+  getView(playerId?: number): GameView {
+    return {
+      ...this.state,
+      seedsDeck: this.state.seedsDeck.length,
+      seasonPiles: this.state.seasonPiles.map(deck => deck.length),
+      newGrowthPiles: this.state.newGrowthPiles.map(deck => deck.length),
+      players: this.state.players.map((player, id) => id === playerId ? player : hidePlayerHand(player))
+    }
   }
 
   /**
@@ -133,10 +217,8 @@ export default class Canopy extends SequentialGame<GameState, Move>
    * @param playerId Identifier of the player
    * @return what the player can see
    */
-  getPlayerView(playerId: PlayerColor): GameView {
-    console.log(playerId)
-    // Here we could, for example, return a "playerView" with only the number of cards in hand for the other player only.
-    return {...this.state, deck: this.state.deck.length}
+  getPlayerView(playerId: number): GameView {
+    return this.getView(playerId)
   }
 
   /**
@@ -160,11 +242,14 @@ export default class Canopy extends SequentialGame<GameState, Move>
    * @param playerId Identifier of the player seeing the move
    * @return What a person should know about the move that was played
    */
-  getPlayerMoveView(move: Move, playerId: PlayerColor): MoveView {
-    console.log(playerId)
-    if (move.type === MoveType.DrawCard && move.playerId === playerId) {
-      return {...move, card: this.state.deck[0]}
+  getPlayerMoveView(move: Move, playerId: number): MoveView {
+    switch (move.type) {
+      case MoveType.LookAtNewGrowthPile: {
+        const player = this.state.players[playerId]
+        return {...move, cards: player.hand}
+      }
+      default:
+        return this.getMoveView(move)
     }
-    return move
   }
 }

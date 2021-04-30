@@ -1,2 +1,2 @@
 export {default} from './Canopy'
-export {MyBoardGameOptionsDescription} from './MyBoardGameOptions'
+export {CanopyOptionsDescription} from './CanopyOptions'

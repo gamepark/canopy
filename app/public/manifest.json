@@ -1,6 +1,5 @@
 {
-  "short_name": "[Board Game]",
-  "name": "[Name of the Board Game]",
+  "name": "Canopy",
   "icons": [
     {
       "src": "favicon.ico",

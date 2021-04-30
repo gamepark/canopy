@@ -1,9 +1,12 @@
-import DrawCard from './DrawCard'
-import SpendGold from './SpendGold'
+import DealCard from './DealCard'
+import LookAtNewGrowthPile from './LookAtNewGrowthPile'
+import PassOnPile from './PassOnPile'
+import PlayCard from './PlayCard'
+import SetActivePlayer from './SetActivePlayer'
 
 /**
- * A "Move" is the combination of all the types of moves that exists in you game
+ * A "Move" is the combination of all the types of moves that exists in the game
  */
-type Move = SpendGold | DrawCard // | DoOtherStuff | ChooseCard | MovePawn...
+type Move = DealCard | SetActivePlayer | LookAtNewGrowthPile | PlayCard | PassOnPile
 
 export default Move

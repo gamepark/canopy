@@ -1,5 +1,5 @@
 {
-  "name": "@gamepark/board-game-template-app",
+  "name": "@gamepark/canopy-app",
   "version": "0.0.0",
   "private": true,
   "description": "React application",
@@ -7,8 +7,8 @@
   "license": "ISC",
   "dependencies": {
     "@emotion/react": "^11.1.5",
-    "@gamepark/react-client": "~4.1.0",
-    "@gamepark/react-components": "~4.0.0",
+    "@gamepark/react-client": "~4.14.8",
+    "@gamepark/react-components": "~4.14.7",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -24,6 +24,7 @@
     "react": "^17.0.1",
     "react-app-rewire-alias": "^1.0.1",
     "react-app-rewired": "^2.1.8",
+    "react-device-detect": "^1.17.0",
     "react-dnd": "^13.1.1",
     "react-dnd-html5-backend": "^12.1.1",
     "react-dnd-multi-backend": "^6.0.2",
