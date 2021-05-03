@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react'
 import GameView from '@gamepark/canopy/state/GameView'
-import {Letterbox} from '@gamepark/react-components'
+import {Hand, Letterbox} from '@gamepark/react-components'
+import Card from './material/Card'
 
 type Props = {
   game: GameView
@@ -10,9 +11,11 @@ type Props = {
 export default function GameDisplay({game}: Props) {
   return (
     <Letterbox css={letterBoxStyle} top={0}>
+      <Card/>
+      <Hand><Card/><Card/></Hand>
       <div css={css`position: absolute;
         top: 50%;
-        left: 50%;
+        left: 50%; 
         transform: translate(-50%, -50%);
         font-size: 3rem;`}>
         {JSON.stringify(game)}

@@ -30,7 +30,7 @@ export function lookAtNewGrowthPileMoveView(state: GameState, move: LookAtNewGro
 }
 
 export function isLookAtNewGrowthPileView(move: LookAtNewGrowthPile | LookAtNewGrowthPileView): move is LookAtNewGrowthPileView {
-  return (move as LookAtNewGrowthPileView).cards !== undefined
+  return typeof (move as LookAtNewGrowthPileView).cards !== undefined
 }
 
 export function lookAtNewGrowthPileInView(state: GameView, move: LookAtNewGrowthPile | LookAtNewGrowthPileView) {

@@ -245,8 +245,12 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
   getPlayerMoveView(move: Move, playerId: number): MoveView {
     switch (move.type) {
       case MoveType.LookAtNewGrowthPile: {
-        const player = this.state.players[playerId]
-        return {...move, cards: player.hand}
+        if (this.state.activePlayer === playerId) {
+          const player = this.state.players[playerId]
+          return {...move, cards: player.hand}
+        } else {
+          return move
+        }
       }
       default:
         return this.getMoveView(move)

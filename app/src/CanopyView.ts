@@ -2,6 +2,9 @@ import {dealCardInView} from '@gamepark/canopy/moves/DealCard'
 import {lookAtNewGrowthPileInView} from '@gamepark/canopy/moves/LookAtNewGrowthPile'
 import MoveType from '@gamepark/canopy/moves/MoveType'
 import MoveView from '@gamepark/canopy/moves/MoveView'
+import {passOnPile} from '@gamepark/canopy/moves/PassOnPile'
+import {playCard} from '@gamepark/canopy/moves/PlayCard'
+import {setActivePlayer} from '@gamepark/canopy/moves/SetActivePlayer'
 import GameView from '@gamepark/canopy/state/GameView'
 import {Game} from '@gamepark/rules-api'
 
@@ -26,8 +29,14 @@ export default class CanopyView implements Game<GameView, MoveView> {
     switch (move.type) {
       case MoveType.DealCard:
         return dealCardInView(this.state, move.pile)
+      case MoveType.SetActivePlayer:
+        return setActivePlayer(this.state, move)
       case MoveType.LookAtNewGrowthPile:
         return lookAtNewGrowthPileInView(this.state, move)
+      case MoveType.PlayCard:
+        return playCard(this.state, move)
+      case MoveType.PassOnPile:
+        return passOnPile(this.state)
     }
   }
 

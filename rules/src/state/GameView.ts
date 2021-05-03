@@ -14,4 +14,8 @@ type GameView = Omit<GameState, 'players' | 'seedsDeck' | 'seasonPiles' | 'newGr
   newGrowthPiles: number[]
 }
 
+export function isGameView(game: GameState | GameView): game is GameView {
+  return typeof game.seedsDeck === 'number'
+}
+
 export default GameView
