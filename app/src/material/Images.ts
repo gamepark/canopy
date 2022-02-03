@@ -1,8 +1,7 @@
-import {isSafari} from 'react-device-detect'
 import currentSeasonNG1 from './board/currentSeasonNG1.png'
 import NG2NG3 from './board/NG2NG3.png'
 import season23 from './board/season23.png'
-import rainforestCardBack from './cards/rainforestCards/rainforestCard-Back.png'
+import coverArtwork from './canopy-cover-artwork.png'
 import blight from './cards/rainforestCards/advancedRainforestCards/blight.jpg'
 import coincapFungi from './cards/rainforestCards/advancedRainforestCards/coincapFungi.jpg'
 import goldenLionTamarinMP from './cards/rainforestCards/advancedRainforestCards/goldenLionTamarin-MP.jpg'
@@ -23,6 +22,7 @@ import orchid from './cards/rainforestCards/advancedRainforestCards/orchid.jpg'
 import pitcherPlant from './cards/rainforestCards/advancedRainforestCards/pitcherPlant.jpg'
 import pygmyMarmosetWL1 from './cards/rainforestCards/advancedRainforestCards/pygmyMarmoset-WL1.jpg'
 import pygmyMarmosetWL2 from './cards/rainforestCards/advancedRainforestCards/pygmyMarmoset-WL2.jpg'
+import rainforestCardBack from './cards/rainforestCards/rainforestCard-Back.png'
 import bromelia from './cards/rainforestCards/standardRainforestCards/bromelia.jpg'
 import canopy01 from './cards/rainforestCards/standardRainforestCards/canopy01.jpg'
 import canopy02 from './cards/rainforestCards/standardRainforestCards/canopy02.jpg'
@@ -101,7 +101,6 @@ import seasonOfSymbiotes from './cards/shiftingSeasons/seasonOfSymbiotes.jpg'
 import shiftingSeasonBack from './cards/shiftingSeasons/shiftingSeason-back.jpg'
 import startingTrunkBack from './cards/startingTrunks/startingTrunk-back.jpg'
 import startingTrunk from './cards/startingTrunks/startingTrunk.jpg'
-import coverArtwork from './canopy-cover-artwork.png'
 import arrowGreen from './menus/arrow-green.png'
 import arrowOrange from './menus/arrow-orange.png'
 import arrowWhite from './menus/arrow-white.png'
@@ -140,15 +139,6 @@ const Images = {
   buttonBlack, buttonBlue, buttonGreen, buttonGrey, buttonRed, buttonYellow, textureGrey,
   circleMetal, titleBlack, titleBlue, titleGreen, titleGrey, titleOrange, titleWhite, titleYellow,
   coverArtwork, scoreBackground, scoreIcon
-}
-
-if (!isSafari) {
-  for (const image in Images) {
-    const match = Images[image].match(/(.*)\.(jpg|png)$/)
-    if (match) {
-      Images[image] = match[1] + '.webp'
-    }
-  }
 }
 
 export default Images

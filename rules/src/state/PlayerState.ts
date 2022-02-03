@@ -15,6 +15,6 @@ type PlayerState = {
 
 export default PlayerState
 
-export function initPlayerState(id: number): PlayerState {
-  return {hand: [], trees: [{trunk: [id]}], plants: [], seeds: [], weather: [], threats: [], wildlife: [], abilities: [], score: 0}
+export function initPlayerState(index: number): PlayerState {
+  return {hand: [], trees: [{trunk: [index]}], plants: [], seeds: [], weather: [], threats: [], wildlife: [], abilities: [], score: 0}
 }

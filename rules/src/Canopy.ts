@@ -41,7 +41,7 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
       // For now, exclude advanced card. Options will come later.
       const rainforestDeck = shuffle(getCardIds(card => card.deck === Deck.Rainforest && !card.advanced))
       const initialState: GameState = {
-        players: arg.players.map((_, id) => initPlayerState(id)),
+        players: [...new Array(arg.players)].map((_, index) => initPlayerState(index)),
         season: 1,
         seedsDeck: shuffle(getCardIds(card => card.deck === Deck.Seed)),
         seasonPiles: [rainforestDeck.splice(rainforestDeck.length * 2 / 3), rainforestDeck.splice(rainforestDeck.length / 2), rainforestDeck],

@@ -1,6 +1,6 @@
 import {css, Global} from '@emotion/react'
 import Canopy from '@gamepark/canopy/Canopy'
-import {CanopyOptionsDescription} from '@gamepark/canopy/CanopyOptions'
+import {CanopyOptionsSpec} from '@gamepark/canopy/CanopyOptions'
 import {GameProvider, setupTranslation} from '@gamepark/react-client'
 import normalize from 'emotion-normalize'
 import {StrictMode} from 'react'
@@ -59,7 +59,7 @@ const style = css`
 
 ReactDOM.render(
   <StrictMode>
-    <GameProvider game="canopy" Rules={Canopy} RulesView={CanopyView} optionsDescription={CanopyOptionsDescription}>
+    <GameProvider game="canopy" Rules={Canopy} RulesView={CanopyView} optionsSpec={CanopyOptionsSpec}>
       <App/>
     </GameProvider>
     <Global styles={[normalize, style]}/>
