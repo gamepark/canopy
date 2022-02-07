@@ -1,4 +1,5 @@
 import {dealCardInView} from '@gamepark/canopy/moves/DealCard'
+import { drawOneFromSeasonDeckInView } from '@gamepark/canopy/moves/DrawOneFromSeasonDeck'
 import {lookAtNewGrowthPileInView} from '@gamepark/canopy/moves/LookAtNewGrowthPile'
 import MoveType from '@gamepark/canopy/moves/MoveType'
 import MoveView from '@gamepark/canopy/moves/MoveView'
@@ -37,6 +38,8 @@ export default class CanopyView implements Game<GameView, MoveView> {
         return playCard(this.state, move)
       case MoveType.PassOnPile:
         return passOnPile(this.state)
+      case MoveType.DrawOneFromSeasonDeck:
+        return drawOneFromSeasonDeckInView(this.state, move)
     }
   }
 
