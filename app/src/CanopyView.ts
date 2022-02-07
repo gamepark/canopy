@@ -3,7 +3,9 @@ import { drawOneFromSeasonDeckInView } from '@gamepark/canopy/moves/DrawOneFromS
 import {lookAtNewGrowthPileInView} from '@gamepark/canopy/moves/LookAtNewGrowthPile'
 import MoveType from '@gamepark/canopy/moves/MoveType'
 import MoveView from '@gamepark/canopy/moves/MoveView'
+import { nextEndSeasonStep } from '@gamepark/canopy/moves/NextEndSeasonStep'
 import {passOnPile} from '@gamepark/canopy/moves/PassOnPile'
+import { playAbility } from '@gamepark/canopy/moves/PlayAbility'
 import {playCard} from '@gamepark/canopy/moves/PlayCard'
 import {setActivePlayer} from '@gamepark/canopy/moves/SetActivePlayer'
 import GameView from '@gamepark/canopy/state/GameView'
@@ -40,6 +42,10 @@ export default class CanopyView implements Game<GameView, MoveView> {
         return passOnPile(this.state)
       case MoveType.DrawOneFromSeasonDeck:
         return drawOneFromSeasonDeckInView(this.state, move)
+      case MoveType.NextEndSeasonStep:
+        return nextEndSeasonStep(this.state)
+      case MoveType.PlayAbility:
+        return playAbility(this.state, move)
     }
   }
 

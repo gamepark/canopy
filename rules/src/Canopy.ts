@@ -2,20 +2,25 @@ import {SecretInformation, SimultaneousGame} from '@gamepark/rules-api'
 import shuffle from 'lodash.shuffle'
 import {CanopyOptions, isGameOptions} from './CanopyOptions'
 import cards, {getCardIds} from './material/cards'
+import Animal from './material/cards/Animal'
 import CardType from './material/cards/CardType'
 import Deck from './material/cards/Deck'
+import PlantSpecies from './material/cards/PlantSpecies'
 import {dealCard, dealCardMove} from './moves/DealCard'
 import { drawOneFromSeasonDeck, drawOneFromSeasonDeckMove } from './moves/DrawOneFromSeasonDeck'
 import {lookAtNewGrowthPile, lookAtNewGrowthPileMove} from './moves/LookAtNewGrowthPile'
 import Move from './moves/Move'
 import MoveType from './moves/MoveType'
 import MoveView from './moves/MoveView'
+import { nextEndSeasonStep, nextEndSeasonStepMove } from './moves/NextEndSeasonStep'
 import {passOnPile, passOnPileMove} from './moves/PassOnPile'
+import { playAbility } from './moves/PlayAbility'
 import {playCard, playCardMove} from './moves/PlayCard'
 import {setActivePlayer, setActivePlayerMove} from './moves/SetActivePlayer'
+import EndOfSeasonStep from './state/EndOfSeasonStep'
 import GameState from './state/GameState'
 import GameView from './state/GameView'
-import {initPlayerState} from './state/PlayerState'
+import {hasAnimalAmongWildlife, initPlayerState} from './state/PlayerState'
 import {hidePlayerHand} from './state/PlayerView'
 
 export default class Canopy extends SimultaneousGame<GameState, Move>
@@ -48,9 +53,54 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
   }
 
   getLegalMoves(playerId: number): Move[] {
+    const moves: Move[] = []
+    if(this.state.endOfSeason){
+      const player = this.state.players[playerId-1]
+      switch(this.state.endOfSeason){
+        case EndOfSeasonStep.Wildlife:{
+          if(player.abilities.find(a => (a.animal === Animal.LeafcutterAnts || a.animal === Animal.HarmoniaMantle) && a.user !== true)){
+            if(player.abilities.find(a => a.animal === Animal.HarmoniaMantle && a.user !== true)){
+              moves.push({type:MoveType.PlayAbility,ability:{animal:Animal.HarmoniaMantle,plant:PlantSpecies.Bromelia},playerId})
+              moves.push({type:MoveType.PlayAbility,ability:{animal:Animal.HarmoniaMantle,plant:PlantSpecies.Fern},playerId})
+              moves.push({type:MoveType.PlayAbility,ability:{animal:Animal.HarmoniaMantle,plant:PlantSpecies.Monstera},playerId})
+              moves.push({type:MoveType.PlayAbility,ability:{animal:Animal.HarmoniaMantle,plant:undefined},playerId})
+            }
+            if(player.abilities.find(a => a.animal === Animal.LeafcutterAnts && a.user !== true)){
+              player.plants.forEach(plant => {
+                moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:plant}, playerId})
+              })
+              player.seeds.forEach(seed => {
+                moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:seed}, playerId})
+              })
+              player.threats.forEach(threat => {
+                moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:threat}, playerId})
+              })
+              player.weather.forEach(w => {
+                moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:w}, playerId})
+              })
+              player.wildlife.forEach(animal => {
+                moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:animal}, playerId})
+              })
+              player.trees.forEach(tree => {
+                if(tree.score === undefined){
+                  tree.trunk.forEach(t => {
+                    moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:t}, playerId})
+                  })
+                  tree.canopy && moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:tree.canopy}, playerId})
+                }
+              })
+              moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:undefined}, playerId})
+            }
+          }
+          return moves
+        }
+        // TODO : add other endSeasons Moves
+        default: return []
+      }
+    }
+
     if (this.state.activePlayer !== playerId) return []
     const player = this.state.players[this.state.activePlayer]
-    const moves: Move[] = []
     for (const cardId of player.hand) {
       const card = cards[cardId]
       switch (card.type) {
@@ -94,6 +144,10 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
         return playCard(this.state, move)
       case MoveType.PassOnPile:
         return passOnPile(this.state)
+      case MoveType.NextEndSeasonStep:
+        return nextEndSeasonStep(this.state)
+      case MoveType.PlayAbility:
+        return playAbility(this.state, move)
     }
   }
 
@@ -106,7 +160,21 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
       }
       return setActivePlayerMove(this.getIdOfPlayerWithLowestScore())
     } else if (this.state.endOfSeason) {
-      // TODO end of season rules
+      switch(this.state.endOfSeason){
+        case EndOfSeasonStep.Wildlife:{
+          if(this.state.players.some(p => hasAnimalAmongWildlife(p,Animal.LeafcutterAnts) || hasAnimalAmongWildlife(p,Animal.HarmoniaMantle) )) return
+          else if (this.state.players.some(p => hasAnimalAmongWildlife(p,Animal.Jaguar))){
+            //TODO : When Jaguar have to attack ? Check Trello for more infos
+            const hunterId:number = this.state.players.findIndex(p => p.abilities.some(a => a.animal === Animal.Jaguar && a.user !== true)) +1
+            const prey:number = shuffle([...this.state.players.find(p => p.abilities.every(a => a.animal !== Animal.Jaguar))!.wildlife])[0]
+            return {type:MoveType.PlayAbility, ability:{animal:Animal.Jaguar, prey}, playerId:hunterId}
+          } else return nextEndSeasonStepMove()
+        }
+        case EndOfSeasonStep.Seeds:{
+          // TODO: distribution of germination cards according to seeds + fires
+        }
+      }
+      // TODO other end of season rules
     }
     if (this.state.activePlayer === undefined) {
       return
