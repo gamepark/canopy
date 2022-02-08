@@ -1,5 +1,14 @@
 enum MoveType {
-  DealCard, SetActivePlayer, LookAtNewGrowthPile, DrawOneFromSeasonDeck, PlayCard, PassOnPile, NextEndSeasonStep, PlayAbility
+  DealCard=1,
+  SetActivePlayer, 
+  LookAtNewGrowthPile, 
+  DrawOneFromSeasonDeck, 
+  PlayCard, 
+  PassOnPile, 
+  NextEndSeasonStep, 
+  PlayAbility, 
+  DealPlayerSeedsCards,
+  DiscardSeedsCards
 }
 
 export default MoveType

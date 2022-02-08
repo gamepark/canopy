@@ -1,4 +1,6 @@
 import {dealCardInView} from '@gamepark/canopy/moves/DealCard'
+import { dealPlayerSeedsCardsInView } from '@gamepark/canopy/moves/DealPlayerSeedsCards'
+import { DiscardSeedsCards } from '@gamepark/canopy/moves/DiscardSeedsCards'
 import { drawOneFromSeasonDeckInView } from '@gamepark/canopy/moves/DrawOneFromSeasonDeck'
 import {lookAtNewGrowthPileInView} from '@gamepark/canopy/moves/LookAtNewGrowthPile'
 import MoveType from '@gamepark/canopy/moves/MoveType'
@@ -46,6 +48,10 @@ export default class CanopyView implements Game<GameView, MoveView> {
         return nextEndSeasonStep(this.state)
       case MoveType.PlayAbility:
         return playAbility(this.state, move)
+      case MoveType.DealPlayerSeedsCards:
+        return dealPlayerSeedsCardsInView(this.state, move)
+      case MoveType.DiscardSeedsCards:
+        return DiscardSeedsCards(this.state, move)
     }
   }
 

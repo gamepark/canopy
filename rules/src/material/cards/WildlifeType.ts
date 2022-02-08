@@ -1,5 +1,5 @@
 enum WildlifeType {
-    Mating, Active
+    Mating=1, Active
 }
 
 export default WildlifeType

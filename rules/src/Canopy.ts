@@ -6,7 +6,10 @@ import Animal from './material/cards/Animal'
 import CardType from './material/cards/CardType'
 import Deck from './material/cards/Deck'
 import PlantSpecies from './material/cards/PlantSpecies'
+import ThreatType from './material/cards/ThreatType'
 import {dealCard, dealCardMove} from './moves/DealCard'
+import { dealPlayerSeedsCards, dealPlayerSeedsCardsMove } from './moves/DealPlayerSeedsCards'
+import { DiscardSeedsCards, discardSeedsCardsMove } from './moves/DiscardSeedsCards'
 import { drawOneFromSeasonDeck, drawOneFromSeasonDeckMove } from './moves/DrawOneFromSeasonDeck'
 import {lookAtNewGrowthPile, lookAtNewGrowthPileMove} from './moves/LookAtNewGrowthPile'
 import Move from './moves/Move'
@@ -20,7 +23,7 @@ import {setActivePlayer, setActivePlayerMove} from './moves/SetActivePlayer'
 import EndOfSeasonStep from './state/EndOfSeasonStep'
 import GameState from './state/GameState'
 import GameView from './state/GameView'
-import {hasAnimalAmongWildlife, initPlayerState} from './state/PlayerState'
+import {hasAnimalAmongWildlife, howManyPlayerHasThreatType, initPlayerState} from './state/PlayerState'
 import {hidePlayerHand} from './state/PlayerView'
 
 export default class Canopy extends SimultaneousGame<GameState, Move>
@@ -66,6 +69,7 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
               moves.push({type:MoveType.PlayAbility,ability:{animal:Animal.HarmoniaMantle,plant:undefined},playerId})
             }
             if(player.abilities.find(a => a.animal === Animal.LeafcutterAnts && a.user !== true)){
+              //TODO: What LCA can exactly discard ? Check Trello Q#3 for more infos
               player.plants.forEach(plant => {
                 moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:plant}, playerId})
               })
@@ -91,6 +95,21 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
               })
               moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:undefined}, playerId})
             }
+          }
+          return moves
+        }
+        case EndOfSeasonStep.Seeds:{
+          if(player.hand.length > 0 && player.seeds.length > 0){
+            for(const card of player.hand){
+              (cards[card].type === CardType.Canopy ||cards[card].type === CardType.Trunk) 
+                ? player.trees.forEach((tree, index) => {
+                  tree.canopy === undefined && moves.push(playCardMove(card, index, playerId))
+                  tree.canopy === undefined && moves.push(playCardMove(card, index, playerId))
+                })  //TODO: What about Canopy Cards, are they mandatory to play or not ? Check Trello Q#4 for more infos
+                : moves.push(playCardMove(card, undefined, playerId))
+              cards[card].type === CardType.Trunk && moves.push(playCardMove(card, undefined, playerId))
+            }
+            moves.push(discardSeedsCardsMove(playerId))
           }
           return moves
         }
@@ -148,6 +167,10 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
         return nextEndSeasonStep(this.state)
       case MoveType.PlayAbility:
         return playAbility(this.state, move)
+      case MoveType.DealPlayerSeedsCards:
+        return dealPlayerSeedsCards(this.state, move)
+      case MoveType.DiscardSeedsCards:
+        return DiscardSeedsCards(this.state, move)
     }
   }
 
@@ -164,14 +187,18 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
         case EndOfSeasonStep.Wildlife:{
           if(this.state.players.some(p => hasAnimalAmongWildlife(p,Animal.LeafcutterAnts) || hasAnimalAmongWildlife(p,Animal.HarmoniaMantle) )) return
           else if (this.state.players.some(p => hasAnimalAmongWildlife(p,Animal.Jaguar))){
-            //TODO : When Jaguar have to attack ? Check Trello for more infos
+            //TODO : When Jaguar have to attack ? Check Trello Q#2 for more infos
             const hunterId:number = this.state.players.findIndex(p => p.abilities.some(a => a.animal === Animal.Jaguar && a.user !== true)) +1
             const prey:number = shuffle([...this.state.players.find(p => p.abilities.every(a => a.animal !== Animal.Jaguar))!.wildlife])[0]
             return {type:MoveType.PlayAbility, ability:{animal:Animal.Jaguar, prey}, playerId:hunterId}
           } else return nextEndSeasonStepMove()
         }
         case EndOfSeasonStep.Seeds:{
-          // TODO: distribution of germination cards according to seeds + fires
+          const indexPlayerWhoMustDraw = this.state.players.findIndex(p => p.seeds.length > 0 && p.hand.length > 0)
+          if(indexPlayerWhoMustDraw !== -1){
+            return dealPlayerSeedsCardsMove(indexPlayerWhoMustDraw)
+          } else return nextEndSeasonStepMove()
+          
         }
       }
       // TODO other end of season rules
@@ -227,12 +254,19 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
       case MoveType.LookAtNewGrowthPile:
       case MoveType.DrawOneFromSeasonDeck:  
       {
-        if (this.state.activePlayer === playerId) {
-          const player = this.state.players[playerId]
+        if (this.state.activePlayer === playerId-1) {
+          const player = this.state.players[playerId-1]
           return {...move, cards: player.hand}
         } else {
           return move
         }
+      }
+      case MoveType.DealPlayerSeedsCards:{
+        if(move.playerId === playerId){
+          const numberOfthreats:number = howManyPlayerHasThreatType(this.state.players[playerId-1],ThreatType.Fire)
+          const cards = this.state.seedsDeck.slice(0,3+numberOfthreats)
+          return {...move, cards}
+        } else return move
       }
       default:
         return this.getMoveView(move)

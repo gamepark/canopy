@@ -4,6 +4,7 @@ import PlayerState from "../state/PlayerState"
 import PlayerView from "../state/PlayerView"
 import harmoniaMantleMove, { HarmoniaMantleAbilityMove, isHarmoniaMantleMove } from "./AbilityMoves/HarmoniaMantleMove"
 import jaguarMove, { isJaguarAbilityMove, JaguarAbilityMove } from "./AbilityMoves/JaguarMove"
+import { KinkajouAbilityMove } from "./AbilityMoves/KinkajouMove"
 import leafCutterAntMove, { isLeafCutterAntsAbilityMove, LeafCutterAntsAbilityMove } from "./AbilityMoves/LeafCutterAntMove"
 import MoveType from "./MoveType"
 
@@ -15,7 +16,7 @@ type PlayAbility = {
 
 export default PlayAbility
 
-export type AbilityMove = LeafCutterAntsAbilityMove | HarmoniaMantleAbilityMove | JaguarAbilityMove
+export type AbilityMove = LeafCutterAntsAbilityMove | HarmoniaMantleAbilityMove | JaguarAbilityMove | KinkajouAbilityMove
   
 export function playAbility(state: GameState | GameView, move:PlayAbility) {
     const player:PlayerState|PlayerView = state.players[move.playerId-1]

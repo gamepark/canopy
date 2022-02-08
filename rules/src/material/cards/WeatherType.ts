@@ -1,5 +1,5 @@
 enum WeatherType {
-  Rain, Sun
+  Rain=1, Sun
 }
 
 export default WeatherType

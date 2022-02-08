@@ -2,6 +2,9 @@ import Ability from './Ability'
 import Tree from './Tree'
 import Animal from '../material/cards/Animal'
 import PlayerView from './PlayerView'
+import ThreatType from '../material/cards/ThreatType'
+import cards from '../material/cards'
+import CardType from '../material/cards/CardType'
 
 type PlayerState = {
   hand: number[]
@@ -23,4 +26,11 @@ export function initPlayerState(index: number): PlayerState {
 
 export function hasAnimalAmongWildlife(player:PlayerState|PlayerView, animal:Animal):boolean{
   return player.wildlife.includes(animal)
+}
+
+export function howManyPlayerHasThreatType(player:PlayerState|PlayerView, threat:ThreatType):number{
+  return player.threats.filter(t => {
+    const card = cards[t]
+    return card.type === CardType.Threat && card.threat === threat
+}).length
 }

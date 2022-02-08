@@ -1,30 +1,34 @@
 import cards from '../material/cards'
+import Animal from '../material/cards/Animal'
 import CardType from '../material/cards/CardType'
+import EndOfSeasonStep from '../state/EndOfSeasonStep'
 import GameState from '../state/GameState'
 import GameView from '../state/GameView'
 import {isPlayerView} from '../state/PlayerView'
+import kinkajouMove, {KinkajouAbilityMove} from './AbilityMoves/KinkajouMove'
 import MoveType from './MoveType'
 
 type PlayCard = {
   type: MoveType.PlayCard
   card: number
   tree?: number
+  playerId?:number
 }
 
 export default PlayCard
 
-export function playCardMove(card: number, tree?: number): PlayCard {
-  return {type: MoveType.PlayCard, card, tree}
+export function playCardMove(card: number, tree?: number, playerId?:number): PlayCard {
+  return {type: MoveType.PlayCard, card, tree, playerId}
 }
 
 export function playCard(state: GameState | GameView, move: PlayCard): void {
-  const player = state.players[state.activePlayer!]
+  const player = move.playerId ? state.players[move.playerId-1] : state.players[state.activePlayer!]
   if (isPlayerView(player)) {
     player.hand--
   } else {
     player.hand = player.hand.filter(card => card !== move.card)
   }
-  delete state.currentPile // player can no longer pass on pile
+  state.endOfSeason && delete state.currentPile // player can no longer pass on pile
   const card = cards[move.card]
   switch (card.type) {
     case CardType.Canopy:
@@ -48,5 +52,13 @@ export function playCard(state: GameState | GameView, move: PlayCard): void {
     case CardType.Wildlife:
       player.wildlife.push(move.card)
       break
+  }
+  if(state.endOfSeason === EndOfSeasonStep.Seeds && move.playerId !== undefined){
+    // TODO: Is Kinkajou Mandatory ? See Trello Q#5 for more infos
+    if(player.abilities.some(a => a.animal === Animal.Kinkajou && a.user !== true)){
+      kinkajouMove({type:MoveType.PlayAbility,ability:{animal:Animal.Kinkajou},playerId:move.playerId}, player)
+    } else {
+      player.seeds.pop()
+    }
   }
 }

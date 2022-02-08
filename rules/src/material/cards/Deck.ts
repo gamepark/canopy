@@ -1,5 +1,5 @@
 enum Deck {
-  StartingTrunk, Rainforest, Seed
+  StartingTrunk=1, Rainforest, Seed
 }
 
 export default Deck

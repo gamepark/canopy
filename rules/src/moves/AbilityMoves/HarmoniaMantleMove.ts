@@ -19,7 +19,7 @@ export function isHarmoniaMantleMove(ability: AbilityMove): ability is HarmoniaM
 function harmoniaMantleMove(move: PlayAbility, player: PlayerState | PlayerView) {
     if(isHarmoniaMantleMove(move.ability)){
         if (move.ability.plant !== undefined) {
-            // TODO: add Plant Card - See Trello for more infos
+            // TODO: add Plant Card - Check Trello Q#1 for more infos
             discardCard(player, cards.findIndex((c, index) => c.type === CardType.Wildlife && c.animal === Animal.HarmoniaMantle && player.wildlife.some(w => w === index)))
         } else {
             player.abilities.find(a => a.animal === Animal.HarmoniaMantle)!.user = true
