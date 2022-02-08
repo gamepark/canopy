@@ -1,6 +1,6 @@
 import {dealCardInView} from '@gamepark/canopy/moves/DealCard'
 import { dealPlayerSeedsCardsInView } from '@gamepark/canopy/moves/DealPlayerSeedsCards'
-import { DiscardSeedsCards } from '@gamepark/canopy/moves/DiscardSeedsCards'
+import { discardSeedsCards } from '@gamepark/canopy/moves/DiscardSeedsCards'
 import { drawOneFromSeasonDeckInView } from '@gamepark/canopy/moves/DrawOneFromSeasonDeck'
 import {lookAtNewGrowthPileInView} from '@gamepark/canopy/moves/LookAtNewGrowthPile'
 import MoveType from '@gamepark/canopy/moves/MoveType'
@@ -9,6 +9,7 @@ import { nextEndSeasonStep } from '@gamepark/canopy/moves/NextEndSeasonStep'
 import {passOnPile} from '@gamepark/canopy/moves/PassOnPile'
 import { playAbility } from '@gamepark/canopy/moves/PlayAbility'
 import {playCard} from '@gamepark/canopy/moves/PlayCard'
+import { scoreTrees } from '@gamepark/canopy/moves/ScoreTrees'
 import {setActivePlayer} from '@gamepark/canopy/moves/SetActivePlayer'
 import GameView from '@gamepark/canopy/state/GameView'
 import {Game} from '@gamepark/rules-api'
@@ -51,7 +52,9 @@ export default class CanopyView implements Game<GameView, MoveView> {
       case MoveType.DealPlayerSeedsCards:
         return dealPlayerSeedsCardsInView(this.state, move)
       case MoveType.DiscardSeedsCards:
-        return DiscardSeedsCards(this.state, move)
+        return discardSeedsCards(this.state, move)
+      case MoveType.ScoreTrees:
+        return scoreTrees(this.state)
     }
   }
 

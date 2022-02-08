@@ -13,7 +13,7 @@ export function discardSeedsCardsMove(playerId:number):DiscardSeedsCards{
     return {type:MoveType.DiscardSeedsCards, playerId}
 }
 
-export function DiscardSeedsCards(state:GameState | GameView, move:DiscardSeedsCards){
+export function discardSeedsCards(state:GameState | GameView, move:DiscardSeedsCards){
     const player = state.players[move.playerId-1]
     player.hand = []
     player.seeds = []

@@ -9,7 +9,7 @@ import PlantSpecies from './material/cards/PlantSpecies'
 import ThreatType from './material/cards/ThreatType'
 import {dealCard, dealCardMove} from './moves/DealCard'
 import { dealPlayerSeedsCards, dealPlayerSeedsCardsMove } from './moves/DealPlayerSeedsCards'
-import { DiscardSeedsCards, discardSeedsCardsMove } from './moves/DiscardSeedsCards'
+import { discardSeedsCards, discardSeedsCardsMove } from './moves/DiscardSeedsCards'
 import { drawOneFromSeasonDeck, drawOneFromSeasonDeckMove } from './moves/DrawOneFromSeasonDeck'
 import {lookAtNewGrowthPile, lookAtNewGrowthPileMove} from './moves/LookAtNewGrowthPile'
 import Move from './moves/Move'
@@ -19,11 +19,12 @@ import { nextEndSeasonStep, nextEndSeasonStepMove } from './moves/NextEndSeasonS
 import {passOnPile, passOnPileMove} from './moves/PassOnPile'
 import { playAbility } from './moves/PlayAbility'
 import {playCard, playCardMove} from './moves/PlayCard'
+import { scoreTrees, scoreTreesMove } from './moves/ScoreTrees'
 import {setActivePlayer, setActivePlayerMove} from './moves/SetActivePlayer'
 import EndOfSeasonStep from './state/EndOfSeasonStep'
 import GameState from './state/GameState'
 import GameView from './state/GameView'
-import {hasAnimalAmongWildlife, howManyPlayerHasThreatType, initPlayerState} from './state/PlayerState'
+import {hasAnimalAmongWildlife, howManyPlayerHasThreatType, initPlayerState, isEnoughCardsDiscarded} from './state/PlayerState'
 import {hidePlayerHand} from './state/PlayerView'
 
 export default class Canopy extends SimultaneousGame<GameState, Move>
@@ -113,6 +114,13 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
           }
           return moves
         }
+
+        case EndOfSeasonStep.Threats:{
+          //TODO: If player has Degenerescence, should he play it first or as he wishes ? Check Trello Q#6
+          
+          return moves
+        }
+
         // TODO : add other endSeasons Moves
         default: return []
       }
@@ -170,7 +178,9 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
       case MoveType.DealPlayerSeedsCards:
         return dealPlayerSeedsCards(this.state, move)
       case MoveType.DiscardSeedsCards:
-        return DiscardSeedsCards(this.state, move)
+        return discardSeedsCards(this.state, move)
+      case MoveType.ScoreTrees:
+        return scoreTrees(this.state)
     }
   }
 
@@ -193,13 +203,24 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
             return {type:MoveType.PlayAbility, ability:{animal:Animal.Jaguar, prey}, playerId:hunterId}
           } else return nextEndSeasonStepMove()
         }
+
         case EndOfSeasonStep.Seeds:{
           const indexPlayerWhoMustDraw = this.state.players.findIndex(p => p.seeds.length > 0 && p.hand.length > 0)
           if(indexPlayerWhoMustDraw !== -1){
             return dealPlayerSeedsCardsMove(indexPlayerWhoMustDraw)
           } else return nextEndSeasonStepMove()
-          
         }
+
+        case EndOfSeasonStep.Threats:{
+          if(isEnoughCardsDiscarded(this.state.players)){
+            return nextEndSeasonStepMove()
+          } else return
+        }
+
+        case EndOfSeasonStep.Trees:{
+          return scoreTreesMove
+        }
+
       }
       // TODO other end of season rules
     }

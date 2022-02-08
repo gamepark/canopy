@@ -8,7 +8,8 @@ enum MoveType {
   NextEndSeasonStep, 
   PlayAbility, 
   DealPlayerSeedsCards,
-  DiscardSeedsCards
+  DiscardSeedsCards,
+  ScoreTrees,
 }
 
 export default MoveType
