@@ -3,6 +3,7 @@ import {dealCardInView} from '@gamepark/canopy/moves/DealCard'
 import { dealPlayerSeedsCardsInView } from '@gamepark/canopy/moves/DealPlayerSeedsCards'
 import { discardSeedsCards } from '@gamepark/canopy/moves/DiscardSeedsCards'
 import { drawOneFromSeasonDeckInView } from '@gamepark/canopy/moves/DrawOneFromSeasonDeck'
+import { endGameScores } from '@gamepark/canopy/moves/EndGameScores'
 import {lookAtNewGrowthPileInView} from '@gamepark/canopy/moves/LookAtNewGrowthPile'
 import MoveType from '@gamepark/canopy/moves/MoveType'
 import MoveView from '@gamepark/canopy/moves/MoveView'
@@ -61,6 +62,8 @@ export default class CanopyView implements Game<GameView, MoveView> {
         return scorePlantsAndWeather(this.state)
       case MoveType.CleanUp:
         return cleanUp(this.state)
+      case MoveType.EndGameScores:
+        return endGameScores(this.state)
     }
   }
 

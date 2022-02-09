@@ -30,7 +30,7 @@ export function hasAnimalAmongWildlife(player:PlayerState|PlayerView, animal:Ani
 }
 
 export function hasActiveAnimalDuringEndSeason(player: PlayerState): boolean {
-  return hasAnimalAmongWildlife(player, Animal.HarmoniaMantle) || hasAnimalAmongWildlife(player, Animal.Jaguar) || (hasAnimalAmongWildlife(player, Animal.LeafcutterAnts) && player.abilities.find(a => a.animal === Animal.LeafcutterAnts)?.user !== true)
+  return hasAnimalAmongWildlife(player, Animal.HarmoniaMantle) || (hasAnimalAmongWildlife(player, Animal.LeafcutterAnts) && player.abilities.find(a => a.animal === Animal.LeafcutterAnts)?.user !== true)
 }
 
 export function howManyPlayerHasThreatType(player:PlayerState|PlayerView, threat:ThreatType):number{

@@ -11,8 +11,9 @@ import DiscardSeedsCards from './DiscardSeedsCards';
 import ScoreTrees from './ScoreTrees'
 import ScorePlantsAndWeather from './ScorePlantsAndWeather'
 import CleanUp from './CleanUp'
+import EndGameScores from './EndGameScores'
 
 type Move = DealCard | SetActivePlayer | LookAtNewGrowthPile | DrawOneFromSeasonDeck | PlayCard | PassOnPile | NextEndSeasonStep
-            | PlayAbility | DealPlayerSeedsCards | DiscardSeedsCards | ScoreTrees | ScorePlantsAndWeather | CleanUp
+            | PlayAbility | DealPlayerSeedsCards | DiscardSeedsCards | ScoreTrees | ScorePlantsAndWeather | CleanUp | EndGameScores
 
 export default Move

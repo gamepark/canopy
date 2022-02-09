@@ -7,11 +7,12 @@ import CardType from './material/cards/CardType'
 import Deck, { CARDS_START_DISMISS } from './material/cards/Deck'
 import PlantSpecies from './material/cards/PlantSpecies'
 import ThreatType from './material/cards/ThreatType'
-import { cleanUp } from './moves/CleanUp'
+import { cleanUp, cleanUpMove } from './moves/CleanUp'
 import {dealCard, dealCardMove} from './moves/DealCard'
 import { dealPlayerSeedsCards, dealPlayerSeedsCardsMove } from './moves/DealPlayerSeedsCards'
 import { discardSeedsCards, discardSeedsCardsMove } from './moves/DiscardSeedsCards'
 import { drawOneFromSeasonDeck, drawOneFromSeasonDeckMove } from './moves/DrawOneFromSeasonDeck'
+import { endGameScores, endGameScoresMove } from './moves/EndGameScores'
 import {lookAtNewGrowthPile, lookAtNewGrowthPileMove} from './moves/LookAtNewGrowthPile'
 import Move from './moves/Move'
 import MoveType from './moves/MoveType'
@@ -52,7 +53,7 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
   }
 
   isOver(): boolean {
-    return this.state.season > 3
+    return this.state.season > 4
   }
 
   isActive(playerId: number): boolean {
@@ -195,10 +196,15 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
         return scorePlantsAndWeather(this.state)
       case MoveType.CleanUp:
         return cleanUp(this.state)
+      case MoveType.EndGameScores:
+        return endGameScores(this.state)
     }
   }
 
   getAutomaticMove(): void | Move {
+    if (this.state.season === 4){
+      return endGameScoresMove
+    }
     if (this.isSeasonBeginning()) {
       for (let pile = 1; pile <= this.state.newGrowthPiles.length; pile++) {
         if (this.state.newGrowthPiles[pile - 1].length < pile) {
@@ -240,7 +246,7 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
         }
 
         case EndOfSeasonStep.Cleanup:{
-          
+          return cleanUpMove
         }
 
       }

@@ -30,10 +30,10 @@ export function scoreTrees(state:GameState|GameView){
         for(const tree of p.trees){
             if(tree.trunk.length === higherTree){
                 tree.reward = 2+state.season
+                p.score += 2+state.season
                 break
             }
         }
     })
     nextEndSeasonStep(state)
-
 }

@@ -12,6 +12,7 @@ enum MoveType {
   ScoreTrees,
   ScorePlantsAndWeather,
   CleanUp,
+  EndGameScores,
 }
 
 export default MoveType
