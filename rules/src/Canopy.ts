@@ -7,6 +7,7 @@ import CardType from './material/cards/CardType'
 import Deck from './material/cards/Deck'
 import PlantSpecies from './material/cards/PlantSpecies'
 import ThreatType from './material/cards/ThreatType'
+import { cleanUp } from './moves/CleanUp'
 import {dealCard, dealCardMove} from './moves/DealCard'
 import { dealPlayerSeedsCards, dealPlayerSeedsCardsMove } from './moves/DealPlayerSeedsCards'
 import { discardSeedsCards, discardSeedsCardsMove } from './moves/DiscardSeedsCards'
@@ -184,6 +185,8 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
         return scoreTrees(this.state)
       case MoveType.ScorePlantsAndWeather:
         return scorePlantsAndWeather(this.state)
+      case MoveType.CleanUp:
+        return cleanUp(this.state)
     }
   }
 
@@ -226,6 +229,10 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
 
         case EndOfSeasonStep.Plants:{
           return scorePlantsAndWeatherMove
+        }
+
+        case EndOfSeasonStep.Cleanup:{
+          
         }
 
       }

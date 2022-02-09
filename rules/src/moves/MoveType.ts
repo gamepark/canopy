@@ -10,7 +10,8 @@ enum MoveType {
   DealPlayerSeedsCards,
   DiscardSeedsCards,
   ScoreTrees,
-  ScorePlantsAndWeather
+  ScorePlantsAndWeather,
+  CleanUp,
 }
 
 export default MoveType

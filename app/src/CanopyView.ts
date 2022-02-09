@@ -1,3 +1,4 @@
+import { cleanUp } from '@gamepark/canopy/moves/CleanUp'
 import {dealCardInView} from '@gamepark/canopy/moves/DealCard'
 import { dealPlayerSeedsCardsInView } from '@gamepark/canopy/moves/DealPlayerSeedsCards'
 import { discardSeedsCards } from '@gamepark/canopy/moves/DiscardSeedsCards'
@@ -58,6 +59,8 @@ export default class CanopyView implements Game<GameView, MoveView> {
         return scoreTrees(this.state)
       case MoveType.ScorePlantsAndWeather:
         return scorePlantsAndWeather(this.state)
+      case MoveType.CleanUp:
+        return cleanUp(this.state)
     }
   }
 

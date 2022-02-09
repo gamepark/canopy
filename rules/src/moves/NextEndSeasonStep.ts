@@ -16,7 +16,6 @@ type NextEndSeasonStep = {
   export function nextEndSeasonStep(state: GameState | GameView) {
       if(state.endOfSeason){
           if(state.endOfSeason === EndOfSeasonStep.Cleanup){
-            delete state.activePlayer
             delete state.endOfSeason
             state.season++
           } else {
