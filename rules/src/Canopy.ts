@@ -26,7 +26,7 @@ import {setActivePlayer, setActivePlayerMove} from './moves/SetActivePlayer'
 import EndOfSeasonStep from './state/EndOfSeasonStep'
 import GameState from './state/GameState'
 import GameView from './state/GameView'
-import {hasAnimalAmongWildlife, howManyPlayerHasThreatType, initPlayerState, isEnoughCardsDiscarded} from './state/PlayerState'
+import PlayerState, {hasActiveAnimalDuringEndSeason, hasAnimalAmongWildlife, howManyPlayerHasThreatType, initPlayerState, isEnoughCardsDiscarded} from './state/PlayerState'
 import {hidePlayerHand} from './state/PlayerView'
 
 export default class Canopy extends SimultaneousGame<GameState, Move>
@@ -56,7 +56,16 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
   }
 
   isActive(playerId: number): boolean {
-    return this.state.activePlayer === playerId && this.isOver() === false
+    const player:PlayerState = this.state.players[playerId-1]
+    if (this.state.endOfSeason){
+      switch(this.state.endOfSeason){
+        case EndOfSeasonStep.Wildlife:return hasActiveAnimalDuringEndSeason(player)
+        case EndOfSeasonStep.Seeds: return player.seeds.length > 0
+        case EndOfSeasonStep.Threats: return player.threats.length > 0
+        default: return false
+      }
+    } else return this.state.activePlayer === playerId && this.isOver() === false
+     
   }
 
   getLegalMoves(playerId: number): Move[] {
