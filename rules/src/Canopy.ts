@@ -4,7 +4,7 @@ import {CanopyOptions, isGameOptions} from './CanopyOptions'
 import cards, {getCardIds} from './material/cards'
 import Animal from './material/cards/Animal'
 import CardType from './material/cards/CardType'
-import Deck from './material/cards/Deck'
+import Deck, { CARDS_START_DISMISS } from './material/cards/Deck'
 import PlantSpecies from './material/cards/PlantSpecies'
 import ThreatType from './material/cards/ThreatType'
 import { cleanUp } from './moves/CleanUp'
@@ -37,6 +37,7 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
     if (isGameOptions(arg)) {
       // For now, exclude advanced card. Options will come later.
       const rainforestDeck = shuffle(getCardIds(card => card.deck === Deck.Rainforest && !card.advanced))
+      rainforestDeck.splice(0,CARDS_START_DISMISS)
       const initialState: GameState = {
         players: [...new Array(arg.players)].map((_, index) => initPlayerState(index)),
         season: 1,
@@ -122,8 +123,6 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
           
           return moves
         }
-
-        // TODO : add other endSeasons Moves
         default: return []
       }
     }
