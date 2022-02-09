@@ -9,6 +9,7 @@ import { nextEndSeasonStep } from '@gamepark/canopy/moves/NextEndSeasonStep'
 import {passOnPile} from '@gamepark/canopy/moves/PassOnPile'
 import { playAbility } from '@gamepark/canopy/moves/PlayAbility'
 import {playCard} from '@gamepark/canopy/moves/PlayCard'
+import { scorePlantsAndWeather } from '@gamepark/canopy/moves/ScorePlantsAndWeather'
 import { scoreTrees } from '@gamepark/canopy/moves/ScoreTrees'
 import {setActivePlayer} from '@gamepark/canopy/moves/SetActivePlayer'
 import GameView from '@gamepark/canopy/state/GameView'
@@ -55,6 +56,8 @@ export default class CanopyView implements Game<GameView, MoveView> {
         return discardSeedsCards(this.state, move)
       case MoveType.ScoreTrees:
         return scoreTrees(this.state)
+      case MoveType.ScorePlantsAndWeather:
+        return scorePlantsAndWeather(this.state)
     }
   }
 

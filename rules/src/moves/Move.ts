@@ -9,8 +9,9 @@ import PlayCard from './PlayCard'
 import SetActivePlayer from './SetActivePlayer'
 import DiscardSeedsCards from './DiscardSeedsCards';
 import ScoreTrees from './ScoreTrees'
+import ScorePlantsAndWeather from './ScorePlantsAndWeather'
 
 type Move = DealCard | SetActivePlayer | LookAtNewGrowthPile | DrawOneFromSeasonDeck | PlayCard | PassOnPile | NextEndSeasonStep
-            | PlayAbility | DealPlayerSeedsCards | DiscardSeedsCards | ScoreTrees
+            | PlayAbility | DealPlayerSeedsCards | DiscardSeedsCards | ScoreTrees | ScorePlantsAndWeather
 
 export default Move

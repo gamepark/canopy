@@ -19,6 +19,7 @@ import { nextEndSeasonStep, nextEndSeasonStepMove } from './moves/NextEndSeasonS
 import {passOnPile, passOnPileMove} from './moves/PassOnPile'
 import { playAbility } from './moves/PlayAbility'
 import {playCard, playCardMove} from './moves/PlayCard'
+import { scorePlantsAndWeather, scorePlantsAndWeatherMove } from './moves/ScorePlantsAndWeather'
 import { scoreTrees, scoreTreesMove } from './moves/ScoreTrees'
 import {setActivePlayer, setActivePlayerMove} from './moves/SetActivePlayer'
 import EndOfSeasonStep from './state/EndOfSeasonStep'
@@ -181,6 +182,8 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
         return discardSeedsCards(this.state, move)
       case MoveType.ScoreTrees:
         return scoreTrees(this.state)
+      case MoveType.ScorePlantsAndWeather:
+        return scorePlantsAndWeather(this.state)
     }
   }
 
@@ -219,6 +222,10 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
 
         case EndOfSeasonStep.Trees:{
           return scoreTreesMove
+        }
+
+        case EndOfSeasonStep.Plants:{
+          return scorePlantsAndWeatherMove
         }
 
       }
