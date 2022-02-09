@@ -11,15 +11,11 @@ type Tree = {
 
 export default Tree
 
-export const scoreTreeReducer = (pv:number, cv:number) => {
-  const previousCard:Card = cards[pv]
-  const currentCard:Card = cards[cv]
-  if(previousCard.type === CardType.Trunk && currentCard.type === CardType.Trunk) return previousCard.value + currentCard.value
-  else return 0
-}
-
 export function scoreTrunk(tree: Tree) {
-  return tree.trunk.reduce(scoreTreeReducer, 0)
+  return (tree.trunk.map(t => {
+    const card = cards[t]
+    return card.type === CardType.Trunk ? card.value : 0
+  })).reduce(((pv,cv) => pv + cv),0)
 }
 
 export function scoreCanopy(tree:Tree):number{

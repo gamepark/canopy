@@ -1,11 +1,6 @@
-import { t } from "i18next"
-import cards from "../material/cards"
-import Card from "../material/cards/Card"
-import CardType from "../material/cards/CardType"
-import Trunk from "../material/cards/Trunk"
 import GameState from "../state/GameState"
 import GameView from "../state/GameView"
-import Tree, { scoreCanopy, scoreTreeReducer, scoreTrunk } from "../state/Tree"
+import { scoreCanopy, scoreTrunk } from "../state/Tree"
 import MoveType from "./MoveType"
 import { nextEndSeasonStep } from "./NextEndSeasonStep"
 

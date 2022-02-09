@@ -223,34 +223,27 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
             return {type:MoveType.PlayAbility, ability:{animal:Animal.Jaguar, prey}, playerId:hunterId}
           } else return nextEndSeasonStepMove()
         }
-
         case EndOfSeasonStep.Seeds:{
           const indexPlayerWhoMustDraw = this.state.players.findIndex(p => p.seeds.length > 0 && p.hand.length > 0)
           if(indexPlayerWhoMustDraw !== -1){
             return dealPlayerSeedsCardsMove(indexPlayerWhoMustDraw)
           } else return nextEndSeasonStepMove()
         }
-
         case EndOfSeasonStep.Threats:{
           if(isEnoughCardsDiscarded(this.state.players)){
             return nextEndSeasonStepMove()
           } else return
         }
-
         case EndOfSeasonStep.Trees:{
           return scoreTreesMove
         }
-
         case EndOfSeasonStep.Plants:{
           return scorePlantsAndWeatherMove
         }
-
         case EndOfSeasonStep.Cleanup:{
           return cleanUpMove
         }
-
       }
-      // TODO other end of season rules
     }
     if (this.state.activePlayer === undefined) {
       return

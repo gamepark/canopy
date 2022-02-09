@@ -20,6 +20,9 @@
   },
   "devDependencies": {
     "@gamepark/rules-api": "~5.8.2",
-    "i18next": "^21.6.10"
+    "@types/jest": "^27.4.0",
+    "i18next": "^21.6.10",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.3"
   }
 }

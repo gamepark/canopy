@@ -13,7 +13,7 @@ const cards: Card[] = [
 
 export default cards
 
-export function getCardIds(predicate: (card: Card) => boolean) {
+export function getCardIds(predicate: (card: Card) => boolean):number[] {
   const result: number[] = []
   cards.forEach((card, id) => {
     if (predicate(card)) {
@@ -21,4 +21,8 @@ export function getCardIds(predicate: (card: Card) => boolean) {
     }
   })
   return result
+}
+
+export function getFirstCardId(predicate:(card:Card) => boolean):number{
+  return cards.findIndex(predicate)
 }

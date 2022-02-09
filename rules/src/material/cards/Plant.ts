@@ -20,6 +20,6 @@ export function scorePlants(plants:number[], canopyCount:number):number{
   const orchids = scoreOrchids(plants.filter(p => {const card = cards[p]; return card.type === CardType.Plant && card.species === PlantSpecies.Orchid}).length)
   const coinCapFungi = scoreCoinCapFungi(plants.filter(p => {const card = cards[p]; return card.type === CardType.Plant && card.species === PlantSpecies.CoincapFungi}).length)
 
-  return monsteras + ferns + bromelias + lianas + orchids + coinCapFungi
+  return (monsteras + ferns + bromelias + lianas + orchids + coinCapFungi)
 
 }
