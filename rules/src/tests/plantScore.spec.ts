@@ -1,18 +1,13 @@
-import { getCardIds, getFirstCardId } from "../material/cards"
-import Deck, { CARDS_START_DISMISS } from "../material/cards/Deck"
+import { getFirstCardId } from "../material/cards"
 import { scorePlants } from "../material/cards/Plant"
 import PlantSpecies, { scoreBromelias, scoreCoinCapFungi, scoreFerns, scoreLianas, scoreMonsteras, scoreOrchids } from "../material/cards/PlantSpecies"
 import { scoreWeather } from "../material/cards/Weather"
 import { scoreTrees } from "../moves/ScoreTrees"
 import GameState from "../state/GameState"
-import PlayerState from "../state/PlayerState"
 import Tree, { scoreCanopy, scoreTrunk } from "../state/Tree"
-import shuffle from 'lodash.shuffle'
 import CardType from "../material/cards/CardType"
 import WeatherType from "../material/cards/WeatherType"
-
-
-
+import createGameState, { createPlayer } from "./testFunctions"
 
 describe('Tests of plants, weathers and trees scoring methods', () => {
     test('scoreBromelia', () => {
@@ -108,30 +103,3 @@ describe('tests of trees', () => {
     })
 
 })
-
-function createPlayer():PlayerState{
-    return{
-        abilities:[],
-        hand:[],
-        plants:[],
-        seeds:[],
-        tempDiscard:[],
-        threats:[],
-        trees:[],
-        weather:[],
-        wildlife:[],
-        score:0
-    }
-}
-
-function createGameState(player:PlayerState):GameState{
-    const rainforestDeck = shuffle(getCardIds(card => card.deck === Deck.Rainforest && !card.advanced))
-    rainforestDeck.splice(0,CARDS_START_DISMISS)
-    return{
-        players:[player],
-        season: 1,
-        seedsDeck: shuffle(getCardIds(card => card.deck === Deck.Seed)),
-        newGrowthPiles: [[], [], []],
-        seasonPiles: [rainforestDeck.splice(rainforestDeck.length * 2 / 3), rainforestDeck.splice(rainforestDeck.length / 2), rainforestDeck],
-    }
-}

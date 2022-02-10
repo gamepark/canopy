@@ -1,6 +1,7 @@
 import cards from '../material/cards'
 import Animal from '../material/cards/Animal'
 import CardType from '../material/cards/CardType'
+import WildlifeType from '../material/cards/WildlifeType'
 import EndOfSeasonStep from '../state/EndOfSeasonStep'
 import GameState from '../state/GameState'
 import GameView from '../state/GameView'
@@ -51,6 +52,7 @@ export function playCard(state: GameState | GameView, move: PlayCard): void {
       break
     case CardType.Wildlife:
       player.wildlife.push(move.card)
+      card.wildlifeType === WildlifeType.Active && player.abilities.push({animal:card.animal})
       break
   }
   if(state.endOfSeason === EndOfSeasonStep.Seeds && move.playerId !== undefined){

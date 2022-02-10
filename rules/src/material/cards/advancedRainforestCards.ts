@@ -24,18 +24,14 @@ const advancedRainforestCards: Card[] = [
   {deck: Rainforest, advanced: true, type: Wildlife, animal: GoldenLionTamarin, wildlifeType: Mating},
   {deck: Rainforest, advanced: true, type: Wildlife, animal: GoliathBirdEater, wildlifeType: Active},
   {deck: Rainforest, advanced: true, type: Wildlife, animal: GoliathBirdEater, wildlifeType: Mating},
-  //{deck: Rainforest, advanced: true, type: Wildlife, animal: HarmoniaMantle, wildlifeType: Active},
-  //{deck: Rainforest, advanced: true, type: Wildlife, animal: HarmoniaMantle, wildlifeType: Mating},
-  ...Array(2).fill({deck: Rainforest, advanced: true, type: Wildlife, animal: HarmoniaMantle, wildlifeType: Mating}),
+  ...Array(2).fill({deck: Rainforest, advanced: true, type: Wildlife, animal: HarmoniaMantle, wildlifeType: Active}),
   {deck: Rainforest, advanced: true, type: Wildlife, animal: Hoatzin, wildlifeType: Active},
   {deck: Rainforest, advanced: true, type: Wildlife, animal: Hoatzin, wildlifeType: Mating},
   {deck: Rainforest, advanced: true, type: Wildlife, animal: HowlerMonkey, wildlifeType: Active},
   {deck: Rainforest, advanced: true, type: Wildlife, animal: HowlerMonkey, wildlifeType: Mating},
   {deck: Rainforest, advanced: true, type: Wildlife, animal: Jaguar, wildlifeType: Active},
   {deck: Rainforest, advanced: true, type: Wildlife, animal: Jaguar, wildlifeType: Mating},
-  //{deck: Rainforest, advanced: true, type: Wildlife, animal: PygmyMarmoset, wildlifeType: Active},
-  //{deck: Rainforest, advanced: true, type: Wildlife, animal: PygmyMarmoset, wildlifeType: Mating}
-  ...Array(2).fill({deck: Rainforest, advanced: true, type: Wildlife, animal: PygmyMarmoset, wildlifeType: Mating})
+  ...Array(2).fill({deck: Rainforest, advanced: true, type: Wildlife, animal: PygmyMarmoset, wildlifeType: Active})
 ]
 
 export default advancedRainforestCards
