@@ -6,3 +6,7 @@ type Ability = {
 }
 
 export default Ability
+
+export function shouldExecuteAbilityBeforeStarting(a:Ability):boolean{
+  return a.user !== true && (a.animal === Animal.PoisonDartFrog || a.animal === Animal.Toucan)
+}

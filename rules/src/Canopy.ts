@@ -2,7 +2,7 @@ import {SecretInformation, SimultaneousGame} from '@gamepark/rules-api'
 import shuffle from 'lodash.shuffle'
 import {CanopyOptions, isGameOptions} from './CanopyOptions'
 import cards, {getCardIds} from './material/cards'
-import Animal from './material/cards/Animal'
+import Animal, { ACTIVE_EMERALD_BOA_SCORE } from './material/cards/Animal'
 import CardType from './material/cards/CardType'
 import Deck, { CARDS_START_DISMISS } from './material/cards/Deck'
 import PlantSpecies from './material/cards/PlantSpecies'
@@ -25,6 +25,7 @@ import {playCard, playCardMove} from './moves/PlayCard'
 import { scorePlantsAndWeather, scorePlantsAndWeatherMove } from './moves/ScorePlantsAndWeather'
 import { scoreTrees, scoreTreesMove } from './moves/ScoreTrees'
 import {setActivePlayer, setActivePlayerMove} from './moves/SetActivePlayer'
+import { shouldExecuteAbilityBeforeStarting } from './state/Ability'
 import EndOfSeasonStep from './state/EndOfSeasonStep'
 import GameState from './state/GameState'
 import GameView from './state/GameView'
@@ -117,39 +118,56 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
     if (this.state.activePlayer !== playerId) return []
     const player = this.state.players[this.state.activePlayer]
 
-    if(player.abilities.some(a => a.animal === Animal.LeafcutterAnts && a.user !== true)){
-      moves.push(...getLegalLCAMoves(player, playerId))
-    }
-
-    for (const cardId of player.hand) {
-      const card = cards[cardId]
-      switch (card.type) {
-        case CardType.Trunk:
-          player.trees.forEach((tree, treeId) => {
-            if (tree.canopy === undefined) {
-              moves.push(playCardMove(cardId, treeId)) // add trunk in existing tree without a Canopy
-            }
-          })
-          moves.push(playCardMove(cardId, player.trees.length)) // start new tree
-          break
-        case CardType.Canopy:
-          player.trees.forEach((tree, treeId) => {
-            if (tree.canopy === undefined) {
-              moves.push(playCardMove(cardId, treeId)) // add Canopy in existing tree without a Canopy
-            }
-          })
-          break
-        default:
-          moves.push(playCardMove(cardId)) // add card into forest
+    if(player.abilities.some(a => shouldExecuteAbilityBeforeStarting(a))){
+      if(player.abilities.some(a => a.animal === Animal.PoisonDartFrog && a.user !== true)){
+        moves.push(playAbilityMove(playerId, {animal:Animal.PoisonDartFrog, isUse:true}))
+        moves.push(playAbilityMove(playerId, {animal:Animal.PoisonDartFrog, isUse:false}))
+      } 
+      if(player.abilities.some(a => a.animal === Animal.Toucan && a.user !== true)){
+        // TODO: Toucan ability move
+      }
+    } else {
+      if(player.abilities.some(a => a.animal === Animal.LeafcutterAnts && a.user !== true)){
+        moves.push(...getLegalLCAMoves(player, playerId))
+      }
+  
+      for (const cardId of player.hand) {
+        const card = cards[cardId]
+        switch (card.type) {
+          case CardType.Trunk:
+            player.trees.forEach((tree, treeId) => {
+              if (tree.canopy === undefined) {
+                moves.push(playCardMove(cardId, treeId)) // add trunk in existing tree without a Canopy
+              }
+            })
+            moves.push(playCardMove(cardId, player.trees.length)) // start new tree
+            break
+          case CardType.Canopy:
+            player.trees.forEach((tree, treeId) => {
+              if (tree.canopy === undefined) {
+                moves.push(playCardMove(cardId, treeId)) // add Canopy in existing tree without a Canopy
+              }
+            })
+            break
+          default:
+            moves.push(playCardMove(cardId)) // add card into forest
+        }
+      }
+  
+      if(player.abilities.some(a => a.animal === Animal.HowlerMonkey && a.user !== true)){
+        moves.push(playAbilityMove(playerId, {animal:Animal.HowlerMonkey}))
+      }
+  
+      if (this.getCurrentSeasonPile().length > 0) {
+        moves.push(passOnPileMove)
+      } else {
+        if(this.state.currentPile && this.state.currentPile !== 3 && isAnyNextPilesNotEmpty(this.state.currentPile, this.state.newGrowthPiles)){
+          moves.push(passOnPileMove)
+        }
       }
     }
-    const canPassPile:boolean = (this.getCurrentSeasonPile().length > 0 && this.state.currentPile === 3)
-    if(player.abilities.some(a => a.animal === Animal.HowlerMonkey && a.user !== true)){
-      moves.push(playAbilityMove(playerId, {animal:Animal.HowlerMonkey}))
-    }
-    if (this.state.currentPile !== undefined && canPassPile) {
-      moves.push(passOnPileMove)
-    }
+
+    
     return moves
   }
 
@@ -241,7 +259,7 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
       if (this.state.currentPile !== undefined) {
         if (this.state.currentPile > 3) {
           return drawOneFromSeasonDeckMove
-        } else if (this.state.newGrowthPiles[this.state.currentPile - 1].length > 0) {
+        } else if (activePlayer.abilities.every(a => a.animal !== Animal.PoisonDartFrog || a.user !== true) && this.state.newGrowthPiles[this.state.currentPile - 1].length > 0) {
           return lookAtNewGrowthPileMove
         } else {
           return passOnPileMove // Pass empty piles at the end of season
@@ -318,7 +336,12 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
     return this.state.seasonPiles[this.state.season-1]
   }
 
-  
 }
 
+function isAnyNextPilesNotEmpty(currentPile:number, piles:[number[],number[],number[]]):boolean{
+  for(let i=currentPile+1; i++;i<piles.length){
+    if(piles[i].length !== 0) return true 
+  }
+  return false
+}
 

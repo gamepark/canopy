@@ -7,6 +7,7 @@ import howlerMonkeyMove, { HowlerMonkeyAbilityMove, isHowlerMonkeyMove } from ".
 import jaguarMove, { isJaguarAbilityMove, JaguarAbilityMove } from "./AbilityMoves/JaguarMove"
 import { KinkajouAbilityMove } from "./AbilityMoves/KinkajouMove"
 import leafCutterAntMove, { isLeafCutterAntsAbilityMove, LeafCutterAntsAbilityMove } from "./AbilityMoves/LeafCutterAntMove"
+import poisonDartFrogMove, { isPoisonDartFrogAbilityMove, PoisonDartFrogAbilityMove } from "./AbilityMoves/PoisonDartFrog"
 import MoveType from "./MoveType"
 
 type PlayAbility = {
@@ -17,7 +18,7 @@ type PlayAbility = {
 
 export default PlayAbility
 
-export type AbilityMove = LeafCutterAntsAbilityMove | HarmoniaMantleAbilityMove | JaguarAbilityMove | KinkajouAbilityMove | HowlerMonkeyAbilityMove
+export type AbilityMove = LeafCutterAntsAbilityMove | HarmoniaMantleAbilityMove | JaguarAbilityMove | KinkajouAbilityMove | HowlerMonkeyAbilityMove | PoisonDartFrogAbilityMove
 
 
 export function playAbilityMove(playerId:number, ability:AbilityMove):PlayAbility{
@@ -34,6 +35,8 @@ export function playAbility(state: GameState | GameView, move:PlayAbility) {
         jaguarMove(state, move, player)
     } else if (isHowlerMonkeyMove(move.ability)){
         howlerMonkeyMove(state, move, player)
+    } else if (isPoisonDartFrogAbilityMove(move.ability)){
+        poisonDartFrogMove(state, move, player)
     }
 }
 
