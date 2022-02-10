@@ -17,6 +17,11 @@ type PlayAbility = {
 export default PlayAbility
 
 export type AbilityMove = LeafCutterAntsAbilityMove | HarmoniaMantleAbilityMove | JaguarAbilityMove | KinkajouAbilityMove
+
+
+export function playAbilityMove(playerId:number, ability:AbilityMove):PlayAbility{
+    return {type:MoveType.PlayAbility, playerId, ability}
+}
   
 export function playAbility(state: GameState | GameView, move:PlayAbility) {
     const player:PlayerState|PlayerView = state.players[move.playerId-1]
