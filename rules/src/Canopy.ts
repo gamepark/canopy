@@ -7,6 +7,7 @@ import CardType from './material/cards/CardType'
 import Deck, { CARDS_START_DISMISS } from './material/cards/Deck'
 import PlantSpecies from './material/cards/PlantSpecies'
 import ThreatType from './material/cards/ThreatType'
+import { getLegalLCAMoves } from './moves/AbilityMoves/LeafCutterAntMove'
 import { cleanUp, cleanUpMove } from './moves/CleanUp'
 import {dealCard, dealCardMove} from './moves/DealCard'
 import { dealPlayerSeedsCards, dealPlayerSeedsCardsMove } from './moves/DealPlayerSeedsCards'
@@ -19,7 +20,7 @@ import MoveType from './moves/MoveType'
 import MoveView from './moves/MoveView'
 import { nextEndSeasonStep, nextEndSeasonStepMove } from './moves/NextEndSeasonStep'
 import {passOnPile, passOnPileMove} from './moves/PassOnPile'
-import { playAbility } from './moves/PlayAbility'
+import { playAbility, playAbilityMove } from './moves/PlayAbility'
 import {playCard, playCardMove} from './moves/PlayCard'
 import { scorePlantsAndWeather, scorePlantsAndWeatherMove } from './moves/ScorePlantsAndWeather'
 import { scoreTrees, scoreTreesMove } from './moves/ScoreTrees'
@@ -83,31 +84,7 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
               moves.push({type:MoveType.PlayAbility,ability:{animal:Animal.HarmoniaMantle,plant:undefined},playerId})
             }
             if(player.abilities.find(a => a.animal === Animal.LeafcutterAnts && a.user !== true)){
-              //TODO: What LCA can exactly discard ? Check Trello Q#3 for more infos
-              player.plants.forEach(plant => {
-                moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:plant}, playerId})
-              })
-              player.seeds.forEach(seed => {
-                moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:seed}, playerId})
-              })
-              player.threats.forEach(threat => {
-                moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:threat}, playerId})
-              })
-              player.weather.forEach(w => {
-                moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:w}, playerId})
-              })
-              player.wildlife.forEach(animal => {
-                moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:animal}, playerId})
-              })
-              player.trees.forEach(tree => {
-                if(tree.score === undefined){
-                  tree.trunk.forEach(t => {
-                    moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:t}, playerId})
-                  })
-                  tree.canopy && moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:tree.canopy}, playerId})
-                }
-              })
-              moves.push({type:MoveType.PlayAbility, ability:{animal:Animal.LeafcutterAnts,card:undefined}, playerId})
+              moves.push(...getLegalLCAMoves(player, playerId))
             }
           }
           return moves
@@ -139,6 +116,11 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
 
     if (this.state.activePlayer !== playerId) return []
     const player = this.state.players[this.state.activePlayer]
+
+    if(player.abilities.some(a => a.animal === Animal.LeafcutterAnts && a.user !== true)){
+      moves.push(...getLegalLCAMoves(player, playerId))
+    }
+
     for (const cardId of player.hand) {
       const card = cards[cardId]
       switch (card.type) {
@@ -162,6 +144,9 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
       }
     }
     const canPassPile:boolean = (this.getCurrentSeasonPile().length > 0 && this.state.currentPile === 3)
+    if(player.abilities.some(a => a.animal === Animal.HowlerMonkey && a.user !== true)){
+      moves.push(playAbilityMove(playerId, {animal:Animal.HowlerMonkey}))
+    }
     if (this.state.currentPile !== undefined && canPassPile) {
       moves.push(passOnPileMove)
     }
@@ -335,3 +320,5 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
 
   
 }
+
+

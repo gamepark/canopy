@@ -3,6 +3,7 @@ import GameView from "../state/GameView"
 import PlayerState from "../state/PlayerState"
 import PlayerView from "../state/PlayerView"
 import harmoniaMantleMove, { HarmoniaMantleAbilityMove, isHarmoniaMantleMove } from "./AbilityMoves/HarmoniaMantleMove"
+import howlerMonkeyMove, { HowlerMonkeyAbilityMove, isHowlerMonkeyMove } from "./AbilityMoves/HowlerMonkeyMove"
 import jaguarMove, { isJaguarAbilityMove, JaguarAbilityMove } from "./AbilityMoves/JaguarMove"
 import { KinkajouAbilityMove } from "./AbilityMoves/KinkajouMove"
 import leafCutterAntMove, { isLeafCutterAntsAbilityMove, LeafCutterAntsAbilityMove } from "./AbilityMoves/LeafCutterAntMove"
@@ -16,7 +17,7 @@ type PlayAbility = {
 
 export default PlayAbility
 
-export type AbilityMove = LeafCutterAntsAbilityMove | HarmoniaMantleAbilityMove | JaguarAbilityMove | KinkajouAbilityMove
+export type AbilityMove = LeafCutterAntsAbilityMove | HarmoniaMantleAbilityMove | JaguarAbilityMove | KinkajouAbilityMove | HowlerMonkeyAbilityMove
 
 
 export function playAbilityMove(playerId:number, ability:AbilityMove):PlayAbility{
@@ -31,6 +32,8 @@ export function playAbility(state: GameState | GameView, move:PlayAbility) {
         harmoniaMantleMove(move, player)
     } else if (isJaguarAbilityMove(move.ability)){
         jaguarMove(state, move, player)
+    } else if (isHowlerMonkeyMove(move.ability)){
+        howlerMonkeyMove(state, move, player)
     }
 }
 

@@ -24,7 +24,7 @@ function harmoniaMantleMove(move: PlayAbility, player: PlayerState | PlayerView)
         } else {
             player.abilities.find(a => a.animal === Animal.HarmoniaMantle)!.user = true
         }
-    } else return console.error("Unexpected Move : trying to play HM Move, but move.ability is not a HM Move !")
+    } else return console.error("Unexpected Move : trying to play Harmonia Mantle Move, but move.ability is not a HM Move !")
 
 }
 
