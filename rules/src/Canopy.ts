@@ -9,6 +9,7 @@ import PlantSpecies from './material/cards/PlantSpecies'
 import ThreatType from './material/cards/ThreatType'
 import { getBoaLegalMoves } from './moves/AbilityMoves/EmeraldBoaMove'
 import { getLegalLCAMoves } from './moves/AbilityMoves/LeafCutterAntMove'
+import { isSlothAbilityMove } from './moves/AbilityMoves/SlothMove'
 import { cleanUp, cleanUpMove } from './moves/CleanUp'
 import {dealCard, dealCardMove} from './moves/DealCard'
 import { dealPlayerSeedsCards, dealPlayerSeedsCardsMove } from './moves/DealPlayerSeedsCards'
@@ -21,7 +22,7 @@ import MoveType from './moves/MoveType'
 import MoveView from './moves/MoveView'
 import { nextEndSeasonStep, nextEndSeasonStepMove } from './moves/NextEndSeasonStep'
 import {passOnPile, passOnPileMove} from './moves/PassOnPile'
-import { playAbility, playAbilityMove } from './moves/PlayAbility'
+import { isNoViewAnimal, playAbility, playAbilityMove, PlayAbilityView } from './moves/PlayAbility'
 import {playCard, playCardMove} from './moves/PlayCard'
 import { scorePlantsAndWeather, scorePlantsAndWeatherMove } from './moves/ScorePlantsAndWeather'
 import { scoreTrees, scoreTreesMove } from './moves/ScoreTrees'
@@ -165,6 +166,9 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
   
       if (this.getCurrentSeasonPile().length > 0) {
         moves.push(passOnPileMove)
+        if(this.getCurrentSeasonPile().length > 1){
+          moves.push(playAbilityMove(playerId, {animal:Animal.Sloth}))
+        }
       } else {
         if(this.state.currentPile && this.state.currentPile !== 3 && isAnyNextPilesNotEmpty(this.state.currentPile, this.state.newGrowthPiles)){
           moves.push(passOnPileMove)
@@ -317,6 +321,18 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
           const cards = this.state.seedsDeck.slice(0,3+numberOfthreats)
           return {...move, cards}
         } else return move
+      }
+      case MoveType.PlayAbility:{
+        if(isNoViewAnimal(move.ability.animal)){
+          return move
+        } else {
+          const ability = move.ability
+          if(isSlothAbilityMove(ability)){
+            const result:PlayAbilityView = {type:move.type, playerId:move.playerId, ability:{animal:Animal.Sloth, cardsId:[...this.getCurrentSeasonPile().slice(0,2)]}}
+            return move.playerId === playerId ? result : move
+          } 
+          return move
+        }
       }
       default:
         return this.getMoveView(move)
