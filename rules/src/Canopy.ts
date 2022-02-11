@@ -7,6 +7,7 @@ import CardType from './material/cards/CardType'
 import Deck, { CARDS_START_DISMISS } from './material/cards/Deck'
 import PlantSpecies from './material/cards/PlantSpecies'
 import ThreatType from './material/cards/ThreatType'
+import { getBoaLegalMoves } from './moves/AbilityMoves/EmeraldBoaMove'
 import { getLegalLCAMoves } from './moves/AbilityMoves/LeafCutterAntMove'
 import { cleanUp, cleanUpMove } from './moves/CleanUp'
 import {dealCard, dealCardMove} from './moves/DealCard'
@@ -156,6 +157,10 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
   
       if(player.abilities.some(a => a.animal === Animal.HowlerMonkey && a.user !== true)){
         moves.push(playAbilityMove(playerId, {animal:Animal.HowlerMonkey}))
+      }
+
+      if(player.abilities.some(a => a.animal === Animal.EmeraldBoa && a.user !== true)){
+        moves.push(...getBoaLegalMoves(player, playerId))
       }
   
       if (this.getCurrentSeasonPile().length > 0) {

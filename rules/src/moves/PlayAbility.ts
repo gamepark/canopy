@@ -2,6 +2,7 @@ import GameState from "../state/GameState"
 import GameView from "../state/GameView"
 import PlayerState from "../state/PlayerState"
 import PlayerView from "../state/PlayerView"
+import emeraldBoaMove, { EmeraldBoaAbilityMove, isEmeraldBoaMove } from "./AbilityMoves/EmeraldBoaMove"
 import harmoniaMantleMove, { HarmoniaMantleAbilityMove, isHarmoniaMantleMove } from "./AbilityMoves/HarmoniaMantleMove"
 import howlerMonkeyMove, { HowlerMonkeyAbilityMove, isHowlerMonkeyMove } from "./AbilityMoves/HowlerMonkeyMove"
 import jaguarMove, { isJaguarAbilityMove, JaguarAbilityMove } from "./AbilityMoves/JaguarMove"
@@ -18,7 +19,8 @@ type PlayAbility = {
 
 export default PlayAbility
 
-export type AbilityMove = LeafCutterAntsAbilityMove | HarmoniaMantleAbilityMove | JaguarAbilityMove | KinkajouAbilityMove | HowlerMonkeyAbilityMove | PoisonDartFrogAbilityMove
+export type AbilityMove = LeafCutterAntsAbilityMove | HarmoniaMantleAbilityMove | JaguarAbilityMove | KinkajouAbilityMove | HowlerMonkeyAbilityMove | PoisonDartFrogAbilityMove 
+                        | EmeraldBoaAbilityMove
 
 
 export function playAbilityMove(playerId:number, ability:AbilityMove):PlayAbility{
@@ -37,6 +39,8 @@ export function playAbility(state: GameState | GameView, move:PlayAbility) {
         howlerMonkeyMove(state, move, player)
     } else if (isPoisonDartFrogAbilityMove(move.ability)){
         poisonDartFrogMove(state, move, player)
+    } else if (isEmeraldBoaMove(move.ability)){
+        emeraldBoaMove(state, move, player)
     }
 }
 

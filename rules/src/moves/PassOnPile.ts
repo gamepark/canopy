@@ -13,7 +13,7 @@ export const passOnPileMove: PassOnPile = {type: MoveType.PassOnPile}
 
 export function passOnPile(state: GameState | GameView) {
   const player = state.players[state.activePlayer!]
-  state.newGrowthPiles[state.currentPile! - 1] = player.hand
+  state.newGrowthPiles[state.currentPile! - 1] = isGameView(state) ? (isPlayerView(player) ? player.hand : player.hand.length) : player.hand
   if (isPlayerView(player)) {
     player.hand = 0
   } else {
