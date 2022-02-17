@@ -1,4 +1,4 @@
-import Ability from './Ability'
+import Ability, { PDFAbility, ToucanAbility } from './Ability'
 import Tree from './Tree'
 import Animal from '../material/cards/Animal'
 import PlayerView from './PlayerView'
@@ -14,7 +14,7 @@ type PlayerState = {
   weather: number[]
   threats: number[]
   wildlife: number[]
-  abilities: Ability[]
+  abilities: (Ability|ToucanAbility|PDFAbility)[]
   tempDiscard:number[]
   score: number
 }

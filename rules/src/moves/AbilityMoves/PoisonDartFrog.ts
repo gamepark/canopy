@@ -1,4 +1,5 @@
 import Animal from "../../material/cards/Animal";
+import { isPDFAbility } from "../../state/Ability";
 import GameState from "../../state/GameState";
 import GameView, { isGameView } from "../../state/GameView";
 import PlayerState from "../../state/PlayerState";
@@ -27,6 +28,7 @@ function poisonDartFrogMove(state:GameState|GameView, move:PlayAbility, player:P
             }
             player.abilities.find(a => a.animal === Animal.PoisonDartFrog)!.user = true
         }
+        player.abilities.find(isPDFAbility)!.isTurnUsed = true
 
     } else return console.error("Unexpected Move : trying to play PDF Move, but move.ability is not a PDF Move !")
 }

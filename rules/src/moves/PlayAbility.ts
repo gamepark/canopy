@@ -11,6 +11,7 @@ import { KinkajouAbilityMove } from "./AbilityMoves/KinkajouMove"
 import leafCutterAntMove, { isLeafCutterAntsAbilityMove, LeafCutterAntsAbilityMove } from "./AbilityMoves/LeafCutterAntMove"
 import poisonDartFrogMove, { isPoisonDartFrogAbilityMove, PoisonDartFrogAbilityMove } from "./AbilityMoves/PoisonDartFrog"
 import slothMove, { isSlothAbilityMove, SlothAbilityMove, SlothAbilityMoveView, slothMoveInView } from "./AbilityMoves/SlothMove"
+import toucanMove, { isToucanAbilityMove, ToucanAbilityMove, ToucanAbilityMoveView, toucanMoveInView } from "./AbilityMoves/ToucanMove"
 import MoveType from "./MoveType"
 
 type PlayAbility = {
@@ -32,16 +33,13 @@ export type PlayAbilityView = {
 }
 
 export type AbilityMove = LeafCutterAntsAbilityMove | HarmoniaMantleAbilityMove | JaguarAbilityMove | KinkajouAbilityMove | HowlerMonkeyAbilityMove | PoisonDartFrogAbilityMove 
-                        | EmeraldBoaAbilityMove | SlothAbilityMove
+                        | EmeraldBoaAbilityMove | SlothAbilityMove | ToucanAbilityMove
 
-export type AbilityMoveView = AbilityMove | (SlothAbilityMoveView)
+export type AbilityMoveView = AbilityMove | (SlothAbilityMoveView | ToucanAbilityMoveView)
 
 export function playAbilityMove(playerId:number, ability:AbilityMove):PlayAbility{
     return {type:MoveType.PlayAbility, playerId, ability}
 }
-
-
-
   
 export function playAbility(state: GameState, move:PlayAbility) {
     const player:PlayerState|PlayerView = state.players[move.playerId-1]
@@ -59,6 +57,8 @@ export function playAbility(state: GameState, move:PlayAbility) {
         emeraldBoaMove(state, move, player)
     } else if (isSlothAbilityMove(move.ability)){
         slothMove(state, move, player)
+    } else if(isToucanAbilityMove(move.ability)){
+        toucanMove(state, move, player)
     }
 }
 
@@ -78,6 +78,8 @@ export function playAbilityInView(state: GameView, move:PlayAbility|PlayAbilityV
         emeraldBoaMove(state, move, player)
     } else if (isSlothAbilityMove(move.ability)){
         slothMoveInView(state, move, player)
+    } else if(isToucanAbilityMove(move.ability)){
+        toucanMoveInView(state, move, player)
     }
 }
 

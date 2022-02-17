@@ -27,7 +27,7 @@ import {playCard, playCardMove} from './moves/PlayCard'
 import { scorePlantsAndWeather, scorePlantsAndWeatherMove } from './moves/ScorePlantsAndWeather'
 import { scoreTrees, scoreTreesMove } from './moves/ScoreTrees'
 import {setActivePlayer, setActivePlayerMove} from './moves/SetActivePlayer'
-import { shouldExecuteAbilityBeforeStarting } from './state/Ability'
+import { isPDFAbility, isToucanAbility, shouldExecuteAbilityBeforeStarting } from './state/Ability'
 import EndOfSeasonStep from './state/EndOfSeasonStep'
 import GameState from './state/GameState'
 import GameView from './state/GameView'
@@ -121,12 +121,21 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
     const player = this.state.players[this.state.activePlayer]
 
     if(player.abilities.some(a => shouldExecuteAbilityBeforeStarting(a))){
-      if(player.abilities.some(a => a.animal === Animal.PoisonDartFrog && a.user !== true)){
+      if(player.abilities.some(a => isPDFAbility(a) && a.user !== true && a.isTurnUsed !== true)){
         moves.push(playAbilityMove(playerId, {animal:Animal.PoisonDartFrog, isUse:true}))
         moves.push(playAbilityMove(playerId, {animal:Animal.PoisonDartFrog, isUse:false}))
       } 
-      if(player.abilities.some(a => a.animal === Animal.Toucan && a.user !== true)){
-        // TODO: Toucan ability move
+      if(player.abilities.some(a => isToucanAbility(a) && a.user !== true && a.isTurnUsed !== true)){
+        const ability = player.abilities.find(isToucanAbility)!
+        if(player.hand.length === 0){
+          moves.push(playAbilityMove(playerId, {animal:Animal.Toucan, isUsed:false}))
+          moves.push(playAbilityMove(playerId, {animal:Animal.Toucan, isUsed:true, step:1, pile:0}))
+          moves.push(playAbilityMove(playerId, {animal:Animal.Toucan, isUsed:true, step:1, pile:1}))
+          moves.push(playAbilityMove(playerId, {animal:Animal.Toucan, isUsed:true, step:1, pile:2}))
+        } else {
+          moves.push(playAbilityMove(playerId, {animal:Animal.Toucan, isUsed:true, step:2, pile:ability.pileTaken}))
+        }
+        return moves
       }
     } else {
       if(player.abilities.some(a => a.animal === Animal.LeafcutterAnts && a.user !== true)){
@@ -264,11 +273,16 @@ export default class Canopy extends SimultaneousGame<GameState, Move>
       return dealCardMove(this.state.currentPile! - 1)
     }
     const activePlayer = this.state.players[this.state.activePlayer]
+
+    if(activePlayer.abilities.some(a => (isToucanAbility(a) && a.isTurnUsed !== true) || (isPDFAbility(a) && a.isTurnUsed !== true))){
+      return
+    }
+
     if (activePlayer.hand.length === 0) {
       if (this.state.currentPile !== undefined) {
         if (this.state.currentPile > 3) {
           return drawOneFromSeasonDeckMove
-        } else if (activePlayer.abilities.every(a => a.animal !== Animal.PoisonDartFrog || a.user !== true) && this.state.newGrowthPiles[this.state.currentPile - 1].length > 0) {
+        } else if (this.state.newGrowthPiles[this.state.currentPile - 1].length > 0) {
           return lookAtNewGrowthPileMove
         } else {
           return passOnPileMove // Pass empty piles at the end of season
